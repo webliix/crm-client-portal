@@ -211,72 +211,117 @@ export default function ClientProjectDetailPage() {
         </Card>
 
         {/* Client Instructions & Messages */}
-        <Card sx={{ borderRadius: tokens.borderRadius.lg, border: `1px solid ${tokens.colors.secondary[200]}`, boxShadow: tokens.shadows.sm }}>
-          <CardContent sx={{ p: 3 }}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
-              <ForumOutlinedIcon color="primary" />
-              <Typography variant="h6" fontWeight={800} color={tokens.colors.secondary[900]}>
-                Submit Instructions & Updates
-              </Typography>
-            </Box>
-            <Divider sx={{ mb: 2.5 }} />
-
-            <Box sx={{ mb: 3 }}>
-              <TextField
-                multiline
-                rows={3}
-                fullWidth
-                placeholder="Type your design feedback, feature request, or instructions for the developers..."
-                value={newInstruction}
-                onChange={(e) => setNewInstruction(e.target.value)}
-                sx={{ mb: 1.5 }}
-              />
-              <Button
-                variant="contained"
-                endIcon={<SendIcon />}
-                disabled={!newInstruction.trim() || submitting}
-                onClick={handleSend}
-                sx={{ fontWeight: 700, borderRadius: tokens.borderRadius.md }}
-              >
-                {submitting ? "Sending..." : "Send Instruction"}
-              </Button>
-            </Box>
-
-            <Box sx={{ display: "grid", gap: 2, maxHeight: 380, overflowY: "auto" }}>
-              {comments.length === 0 ? (
-                <Typography variant="caption" color="text.secondary" sx={{ fontStyle: "italic" }}>
-                  No instructions or updates recorded yet. Write your first update above.
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          <Card sx={{ borderRadius: tokens.borderRadius.lg, border: `1px solid ${tokens.colors.secondary[200]}`, boxShadow: tokens.shadows.sm }}>
+            <CardContent sx={{ p: 3 }}>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
+                <ForumOutlinedIcon color="primary" />
+                <Typography variant="h6" fontWeight={800} color={tokens.colors.secondary[900]}>
+                  Submit Instructions & Updates
                 </Typography>
-              ) : (
-                comments.map((c) => (
-                  <Box
-                    key={c.id}
-                    sx={{
-                      p: 2,
-                      borderRadius: tokens.borderRadius.md,
-                      bgcolor: tokens.colors.secondary[50],
-                      border: `1px solid ${tokens.colors.secondary[200]}`,
-                    }}
-                  >
-                    <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
-                      <Typography variant="subtitle2" fontWeight={700} color={tokens.colors.primary.main}>
-                        {c.authorName || "Client Instruction"}
-                      </Typography>
-                      {c.createdAt && (
-                        <Typography variant="caption" color="text.secondary">
-                          {new Date(c.createdAt).toLocaleDateString()}
+              </Box>
+              <Divider sx={{ mb: 2.5 }} />
+
+              <Box sx={{ mb: 3 }}>
+                <TextField
+                  multiline
+                  rows={3}
+                  fullWidth
+                  placeholder="Type your design feedback, feature request, or instructions for the developers..."
+                  value={newInstruction}
+                  onChange={(e) => setNewInstruction(e.target.value)}
+                  sx={{ mb: 1.5 }}
+                />
+                <Button
+                  variant="contained"
+                  endIcon={<SendIcon />}
+                  disabled={!newInstruction.trim() || submitting}
+                  onClick={handleSend}
+                  sx={{ fontWeight: 700, borderRadius: tokens.borderRadius.md }}
+                >
+                  {submitting ? "Sending..." : "Send Instruction"}
+                </Button>
+              </Box>
+
+              <Box sx={{ display: "grid", gap: 2, maxHeight: 320, overflowY: "auto" }}>
+                {comments.length === 0 ? (
+                  <Typography variant="caption" color="text.secondary" sx={{ fontStyle: "italic" }}>
+                    No instructions or updates recorded yet. Write your first update above.
+                  </Typography>
+                ) : (
+                  comments.map((c) => (
+                    <Box
+                      key={c.id}
+                      sx={{
+                        p: 2,
+                        borderRadius: tokens.borderRadius.md,
+                        bgcolor: tokens.colors.secondary[50],
+                        border: `1px solid ${tokens.colors.secondary[200]}`,
+                      }}
+                    >
+                      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
+                        <Typography variant="subtitle2" fontWeight={700} color={tokens.colors.primary.main}>
+                          {c.authorName || "Client Instruction"}
                         </Typography>
-                      )}
+                        {c.createdAt && (
+                          <Typography variant="caption" color="text.secondary">
+                            {new Date(c.createdAt).toLocaleDateString()}
+                          </Typography>
+                        )}
+                      </Box>
+                      <Typography variant="body2" color={tokens.colors.secondary[800]} sx={{ lineHeight: 1.5 }}>
+                        {c.comment}
+                      </Typography>
                     </Box>
-                    <Typography variant="body2" color={tokens.colors.secondary[800]} sx={{ lineHeight: 1.5 }}>
-                      {c.comment}
+                  ))
+                )}
+              </Box>
+            </CardContent>
+          </Card>
+
+          {/* Documentation & Specifications Card */}
+          <Card sx={{ borderRadius: tokens.borderRadius.lg, border: `1px solid ${tokens.colors.secondary[200]}`, boxShadow: tokens.shadows.sm }}>
+            <CardContent sx={{ p: 3 }}>
+              <Typography variant="h6" fontWeight={800} color={tokens.colors.secondary[900]} gutterBottom>
+                Project Documentation & Architecture
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                Access architectural blueprints, user manuals, and technical specifications for this project.
+              </Typography>
+              <Divider sx={{ mb: 2 }} />
+
+              <Box sx={{ display: "grid", gap: 1.5 }}>
+                <Box sx={{ p: 2, borderRadius: tokens.borderRadius.md, bgcolor: tokens.colors.secondary[50], border: `1px solid ${tokens.colors.secondary[200]}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <Box>
+                    <Typography variant="subtitle2" fontWeight={700} color={tokens.colors.secondary[900]}>
+                      System Architecture Blueprint.pdf
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      Technical design & database schema specification
                     </Typography>
                   </Box>
-                ))
-              )}
-            </Box>
-          </CardContent>
-        </Card>
+                  <Button size="small" variant="outlined" sx={{ fontWeight: 700, borderRadius: tokens.borderRadius.sm }}>
+                    View Doc
+                  </Button>
+                </Box>
+
+                <Box sx={{ p: 2, borderRadius: tokens.borderRadius.md, bgcolor: tokens.colors.secondary[50], border: `1px solid ${tokens.colors.secondary[200]}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <Box>
+                    <Typography variant="subtitle2" fontWeight={700} color={tokens.colors.secondary[900]}>
+                      User Operation Manual & API Docs.pdf
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      Client administration guide & API integration routes
+                    </Typography>
+                  </Box>
+                  <Button size="small" variant="outlined" sx={{ fontWeight: 700, borderRadius: tokens.borderRadius.sm }}>
+                    View Doc
+                  </Button>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+        </Box>
       </Box>
     </Box>
   );

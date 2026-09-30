@@ -49,8 +49,7 @@ export function ClientLayout({ children }: Props) {
       <Box sx={{ p: 2.5, display: "flex", alignItems: "center", gap: 1.5, borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
         <Box
           component="img"
-          src="https://webliix.com/logo.png"
-          onError={(e: any) => { e.target.onerror = null; e.target.src = "https://webliix.com/icons.ico"; }}
+          src="https://res.cloudinary.com/vhth8clt/image/upload/v1788210409/logo.png"
           alt="Webliix Logo"
           sx={{
             height: 36,

@@ -27,7 +27,6 @@ export default function ClientProfilePage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
-  const [jobTitle, setJobTitle] = useState("");
   const [bio, setBio] = useState("");
   const [timezone, setTimezone] = useState("Asia/Kolkata");
 
@@ -46,7 +45,6 @@ export default function ClientProfilePage() {
         setFirstName(u.firstName || u.name.split(" ")[0] || "");
         setLastName(u.lastName || u.name.split(" ")[1] || "");
         setPhone(u.phone || "");
-        setJobTitle(u.jobTitle || "Client Partner");
         setBio(u.bio || "Webliix Enterprise Client Account");
         setTimezone(u.timezone || "Asia/Kolkata");
       }
@@ -64,7 +62,6 @@ export default function ClientProfilePage() {
       firstName,
       lastName,
       phone,
-      jobTitle,
       bio,
       timezone,
     });
@@ -155,7 +152,7 @@ export default function ClientProfilePage() {
               <Chip label="Verified Client" color="primary" size="small" sx={{ fontWeight: 700 }} />
             </Box>
             <Typography variant="body2" color="text.secondary">
-              {user?.email} • {jobTitle}
+              {user?.email}
             </Typography>
           </Box>
         </CardContent>
@@ -217,20 +214,12 @@ export default function ClientProfilePage() {
                   />
                 </Box>
 
-                <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2 }}>
-                  <TextField
-                    label="Job Title / Position"
-                    fullWidth
-                    value={jobTitle}
-                    onChange={(e) => setJobTitle(e.target.value)}
-                  />
-                  <TextField
-                    label="Timezone"
-                    fullWidth
-                    value={timezone}
-                    onChange={(e) => setTimezone(e.target.value)}
-                  />
-                </Box>
+                <TextField
+                  label="Timezone"
+                  fullWidth
+                  value={timezone}
+                  onChange={(e) => setTimezone(e.target.value)}
+                />
 
                 <TextField
                   label="Account Bio / Notes"
