@@ -5,16 +5,20 @@ import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
-import CircularProgress from "@mui/material/CircularProgress";
+import LinearProgress from "@mui/material/LinearProgress";
+import Chip from "@mui/material/Chip";
 import FolderSpecialOutlinedIcon from "@mui/icons-material/FolderSpecialOutlined";
 import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import SparklesIcon from "@mui/icons-material/AutoAwesome";
 import { tokens } from "../theme/tokens";
 import { authService } from "../services/authService";
 import { projectApi, type ClientProject } from "../services/projectApi";
 import { invoiceApi } from "../services/invoiceApi";
 import { ticketApi } from "../services/ticketApi";
+import { ClientDashboardSkeleton } from "../components/common/ClientSkeleton";
+import { BrandLoader } from "../components/common/BrandLoader";
 
 export default function ClientDashboardPage() {
   const navigate = useNavigate();
@@ -37,71 +41,138 @@ export default function ClientDashboardPage() {
     });
   }, []);
 
+  if (loading) {
+    return (
+      <Box sx={{ p: { xs: 2.5, md: 4 } }}>
+        <BrandLoader message="Loading your enterprise dashboard..." size="medium" />
+        <Box sx={{ mt: 2 }}>
+          <ClientDashboardSkeleton />
+        </Box>
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ p: { xs: 2.5, md: 4 } }}>
-      {/* Welcome Banner */}
+      {/* Premium Branded Welcome Banner */}
       <Card
         sx={{
           borderRadius: tokens.borderRadius.xl,
-          border: `1px solid ${tokens.colors.secondary[200]}`,
+          border: `1px solid ${tokens.colors.primary[200]}`,
           mb: 4,
-          background: `linear-gradient(135deg, #ffffff 0%, ${tokens.colors.primary[50]} 100%)`,
+          background: `linear-gradient(135deg, ${tokens.colors.primary[50]} 0%, #ffffff 50%, ${tokens.colors.primary[100]} 100%)`,
+          boxShadow: tokens.shadows.md,
+          position: "relative",
+          overflow: "hidden",
         }}
       >
-        <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+        <CardContent sx={{ p: { xs: 3, md: 4.5 } }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+            <SparklesIcon sx={{ color: tokens.colors.primary.main, fontSize: 20 }} />
+            <Typography variant="caption" fontWeight={800} color="primary" textTransform="uppercase" letterSpacing="0.08em">
+              Client Delivery Portal • login.webliix.com
+            </Typography>
+          </Box>
+
           <Typography variant="h4" fontWeight={800} color={tokens.colors.secondary[900]} gutterBottom>
             Welcome, {user?.name || "Valued Client"}!
           </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 700, lineHeight: 1.6 }}>
-            Here is your live project delivery, invoice billing, and support ticket overview on <strong>login.webliix.com</strong>.
+
+          <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 720, lineHeight: 1.6 }}>
+            Track active project progress, inspect milestones, view billing statements, and submit design or feature instructions directly to your Webliix engineering team.
           </Typography>
         </CardContent>
       </Card>
 
       {/* KPI Overview Grid */}
       <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(3, 1fr)" }, gap: 3, mb: 4 }}>
-        <Card sx={{ borderRadius: tokens.borderRadius.lg, border: `1px solid ${tokens.colors.secondary[200]}` }}>
-          <CardContent sx={{ p: 3, display: "flex", alignItems: "center", gap: 2 }}>
-            <Box sx={{ p: 1.5, borderRadius: tokens.borderRadius.md, bgcolor: tokens.colors.primary[50], color: tokens.colors.primary.main }}>
+        <Card
+          sx={{
+            borderRadius: tokens.borderRadius.lg,
+            border: `1px solid ${tokens.colors.secondary[200]}`,
+            transition: "transform 0.2s ease, box-shadow 0.2s ease",
+            "&:hover": { transform: "translateY(-2px)", boxShadow: tokens.shadows.md },
+          }}
+        >
+          <CardContent sx={{ p: 3, display: "flex", alignItems: "center", gap: 2.5 }}>
+            <Box
+              sx={{
+                p: 2,
+                borderRadius: tokens.borderRadius.md,
+                bgcolor: tokens.colors.primary[50],
+                color: tokens.colors.primary.main,
+                display: "flex",
+              }}
+            >
               <FolderSpecialOutlinedIcon fontSize="large" />
             </Box>
             <Box>
-              <Typography variant="caption" fontWeight={700} color="text.secondary" textTransform="uppercase">
+              <Typography variant="caption" fontWeight={700} color="text.secondary" textTransform="uppercase" letterSpacing="0.05em">
                 Active Projects
               </Typography>
-              <Typography variant="h4" fontWeight={800} color={tokens.colors.secondary[900]}>
+              <Typography variant="h3" fontWeight={800} color={tokens.colors.secondary[900]}>
                 {projects.length}
               </Typography>
             </Box>
           </CardContent>
         </Card>
 
-        <Card sx={{ borderRadius: tokens.borderRadius.lg, border: `1px solid ${tokens.colors.secondary[200]}` }}>
-          <CardContent sx={{ p: 3, display: "flex", alignItems: "center", gap: 2 }}>
-            <Box sx={{ p: 1.5, borderRadius: tokens.borderRadius.md, bgcolor: tokens.colors.success[50], color: tokens.colors.success.main }}>
+        <Card
+          sx={{
+            borderRadius: tokens.borderRadius.lg,
+            border: `1px solid ${tokens.colors.secondary[200]}`,
+            transition: "transform 0.2s ease, box-shadow 0.2s ease",
+            "&:hover": { transform: "translateY(-2px)", boxShadow: tokens.shadows.md },
+          }}
+        >
+          <CardContent sx={{ p: 3, display: "flex", alignItems: "center", gap: 2.5 }}>
+            <Box
+              sx={{
+                p: 2,
+                borderRadius: tokens.borderRadius.md,
+                bgcolor: tokens.colors.success[50],
+                color: tokens.colors.success.main,
+                display: "flex",
+              }}
+            >
               <ReceiptLongOutlinedIcon fontSize="large" />
             </Box>
             <Box>
-              <Typography variant="caption" fontWeight={700} color="text.secondary" textTransform="uppercase">
-                Total Invoices
+              <Typography variant="caption" fontWeight={700} color="text.secondary" textTransform="uppercase" letterSpacing="0.05em">
+                Billing Invoices
               </Typography>
-              <Typography variant="h4" fontWeight={800} color={tokens.colors.secondary[900]}>
+              <Typography variant="h3" fontWeight={800} color={tokens.colors.secondary[900]}>
                 {invoicesCount}
               </Typography>
             </Box>
           </CardContent>
         </Card>
 
-        <Card sx={{ borderRadius: tokens.borderRadius.lg, border: `1px solid ${tokens.colors.secondary[200]}` }}>
-          <CardContent sx={{ p: 3, display: "flex", alignItems: "center", gap: 2 }}>
-            <Box sx={{ p: 1.5, borderRadius: tokens.borderRadius.md, bgcolor: tokens.colors.warning[50], color: tokens.colors.warning.main }}>
+        <Card
+          sx={{
+            borderRadius: tokens.borderRadius.lg,
+            border: `1px solid ${tokens.colors.secondary[200]}`,
+            transition: "transform 0.2s ease, box-shadow 0.2s ease",
+            "&:hover": { transform: "translateY(-2px)", boxShadow: tokens.shadows.md },
+          }}
+        >
+          <CardContent sx={{ p: 3, display: "flex", alignItems: "center", gap: 2.5 }}>
+            <Box
+              sx={{
+                p: 2,
+                borderRadius: tokens.borderRadius.md,
+                bgcolor: tokens.colors.warning[50],
+                color: tokens.colors.warning.main,
+                display: "flex",
+              }}
+            >
               <ConfirmationNumberOutlinedIcon fontSize="large" />
             </Box>
             <Box>
-              <Typography variant="caption" fontWeight={700} color="text.secondary" textTransform="uppercase">
+              <Typography variant="caption" fontWeight={700} color="text.secondary" textTransform="uppercase" letterSpacing="0.05em">
                 Support Tickets
               </Typography>
-              <Typography variant="h4" fontWeight={800} color={tokens.colors.secondary[900]}>
+              <Typography variant="h3" fontWeight={800} color={tokens.colors.secondary[900]}>
                 {ticketsCount}
               </Typography>
             </Box>
@@ -109,39 +180,80 @@ export default function ClientDashboardPage() {
         </Card>
       </Box>
 
-      {/* Projects Quick View */}
-      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
-        <Typography variant="h6" fontWeight={700} color={tokens.colors.secondary[900]}>
-          Your Active Projects
+      {/* Projects Quick View Section */}
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2.5 }}>
+        <Typography variant="h6" fontWeight={800} color={tokens.colors.secondary[900]}>
+          Your Active Deliverables
         </Typography>
-        <Button endIcon={<ArrowForwardIcon />} onClick={() => navigate("/projects")} sx={{ fontWeight: 700 }}>
+        <Button
+          endIcon={<ArrowForwardIcon />}
+          onClick={() => navigate("/projects")}
+          sx={{ fontWeight: 700, borderRadius: tokens.borderRadius.sm }}
+        >
           View All Projects
         </Button>
       </Box>
 
-      {loading ? (
-        <Box sx={{ py: 6, textAlign: "center" }}>
-          <CircularProgress size={36} sx={{ color: tokens.colors.primary.main }} />
-        </Box>
-      ) : projects.length === 0 ? (
-        <Card sx={{ p: 4, textAlign: "center", borderRadius: tokens.borderRadius.lg, border: `1px solid ${tokens.colors.secondary[200]}` }}>
-          <Typography variant="body2" color="text.secondary">
-            No projects currently assigned to your account.
+      {projects.length === 0 ? (
+        <Card sx={{ p: 5, textAlign: "center", borderRadius: tokens.borderRadius.lg, border: `1px solid ${tokens.colors.secondary[200]}` }}>
+          <Typography variant="body1" color="text.secondary" fontWeight={500}>
+            No active deliverables currently assigned to your client account.
           </Typography>
         </Card>
       ) : (
         <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(2, 1fr)" }, gap: 3 }}>
           {projects.slice(0, 2).map((proj) => (
-            <Card key={proj.id} sx={{ borderRadius: tokens.borderRadius.lg, border: `1px solid ${tokens.colors.secondary[200]}`, p: 3 }}>
-              <Typography variant="subtitle1" fontWeight={700} color={tokens.colors.secondary[900]} gutterBottom>
-                {proj.projectName}
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                {proj.description || "Website and application development deliverables."}
-              </Typography>
-              <Button size="small" variant="outlined" onClick={() => navigate(`/projects/${proj.id}`)}>
-                View Milestone Progress
-              </Button>
+            <Card
+              key={proj.id}
+              sx={{
+                borderRadius: tokens.borderRadius.lg,
+                border: `1px solid ${tokens.colors.secondary[200]}`,
+                p: 3,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                boxShadow: tokens.shadows.sm,
+                transition: "box-shadow 0.2s ease",
+                "&:hover": { boxShadow: tokens.shadows.md },
+              }}
+            >
+              <Box sx={{ mb: 2 }}>
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1.5 }}>
+                  <Chip label={proj.projectCode || `PRJ-${proj.id}`} size="small" sx={{ fontWeight: 800, bgcolor: tokens.colors.primary[50], color: tokens.colors.primary.main }} />
+                  <Chip label={proj.status || "In Progress"} size="small" color="success" sx={{ fontWeight: 700 }} />
+                </Box>
+                <Typography variant="h6" fontWeight={800} color={tokens.colors.secondary[900]} gutterBottom>
+                  {proj.projectName}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ minHeight: 40, lineHeight: 1.5 }}>
+                  {proj.description || "High-performance software and cloud application delivery."}
+                </Typography>
+              </Box>
+
+              <Box>
+                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.75 }}>
+                  <Typography variant="caption" fontWeight={700} color="text.secondary">
+                    Overall Completion
+                  </Typography>
+                  <Typography variant="caption" fontWeight={800} color={tokens.colors.primary.main}>
+                    {proj.progressPercentage ?? 0}%
+                  </Typography>
+                </Box>
+                <LinearProgress
+                  variant="determinate"
+                  value={proj.progressPercentage ?? 0}
+                  sx={{ height: 8, borderRadius: 4, mb: 2.5, bgcolor: tokens.colors.secondary[100] }}
+                />
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  endIcon={<ArrowForwardIcon />}
+                  onClick={() => navigate(`/projects/${proj.id}`)}
+                  sx={{ borderRadius: tokens.borderRadius.md, fontWeight: 700 }}
+                >
+                  View Milestones & Instructions
+                </Button>
+              </Box>
             </Card>
           ))}
         </Box>

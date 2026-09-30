@@ -10,11 +10,11 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
-import CircularProgress from "@mui/material/CircularProgress";
 import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import { tokens } from "../theme/tokens";
 import { ticketApi, type ClientTicket } from "../services/ticketApi";
+import { BrandLoader } from "../components/common/BrandLoader";
 
 export default function ClientTicketsPage() {
   const [tickets, setTickets] = useState<ClientTicket[]>([]);
@@ -79,30 +79,30 @@ export default function ClientTicketsPage() {
       </Box>
 
       {loading ? (
-        <Box sx={{ py: 8, textAlign: "center" }}>
-          <CircularProgress size={40} sx={{ color: tokens.colors.primary.main }} />
+        <Box sx={{ py: 6, textAlign: "center" }}>
+          <BrandLoader message="Loading support tickets..." size="medium" />
         </Box>
       ) : tickets.length === 0 ? (
-        <Card sx={{ p: 6, textAlign: "center", borderRadius: tokens.borderRadius.lg }}>
-          <ConfirmationNumberOutlinedIcon sx={{ fontSize: 48, color: tokens.colors.secondary[300], mb: 1.5 }} />
-          <Typography variant="h6" fontWeight={700}>
+        <Card sx={{ p: 6, textAlign: "center", borderRadius: tokens.borderRadius.lg, border: `1px solid ${tokens.colors.secondary[200]}` }}>
+          <ConfirmationNumberOutlinedIcon sx={{ fontSize: 56, color: tokens.colors.secondary[300], mb: 2 }} />
+          <Typography variant="h6" fontWeight={800} color={tokens.colors.secondary[800]} gutterBottom>
             No Support Tickets
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            You haven&apos;t opened any support tickets yet. Click below to request support.
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            You haven&apos;t opened any support tickets yet. Click below to request support from our engineering team.
           </Typography>
-          <Button variant="contained" onClick={() => setOpenModal(true)} sx={{ fontWeight: 700 }}>
+          <Button variant="contained" onClick={() => setOpenModal(true)} sx={{ fontWeight: 700, borderRadius: tokens.borderRadius.md }}>
             Create First Support Ticket
           </Button>
         </Card>
       ) : (
         <Box sx={{ display: "grid", gap: 2 }}>
           {tickets.map((t) => (
-            <Card key={t.id} sx={{ borderRadius: tokens.borderRadius.md, border: `1px solid ${tokens.colors.secondary[200]}` }}>
+            <Card key={t.id} sx={{ borderRadius: tokens.borderRadius.md, border: `1px solid ${tokens.colors.secondary[200]}`, boxShadow: tokens.shadows.sm }}>
               <CardContent sx={{ p: 2.5, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 2 }}>
                 <Box>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
-                    <Chip label={t.ticketNumber || `TCK-${t.id}`} size="small" sx={{ fontWeight: 700 }} />
+                    <Chip label={t.ticketNumber || `TCK-${t.id}`} size="small" sx={{ fontWeight: 800, bgcolor: tokens.colors.primary[50], color: tokens.colors.primary.main }} />
                     <Typography variant="subtitle1" fontWeight={700} color={tokens.colors.secondary[900]}>
                       {t.subject}
                     </Typography>
