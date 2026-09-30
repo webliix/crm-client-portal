@@ -65,8 +65,8 @@ export default function ClientLoginPage() {
           <Box sx={{ textAlign: "center", mb: 4 }}>
             <Box
               component="img"
-              src="https://webliix.com/logo.svg"
-              onError={(e: any) => { e.target.onerror = null; e.target.src = "https://webliix.in/favicon.ico"; }}
+              src="https://webliix.com/icons.svg"
+              onError={(e: any) => { e.target.onerror = null; e.target.src = "https://webliix.com/icons.ico"; }}
               alt="Webliix Logo"
               sx={{
                 height: 52,
