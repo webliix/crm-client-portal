@@ -152,10 +152,21 @@ export default function ClientLoginPage() {
             </Box>
           </form>
 
-          <Box sx={{ mt: 4, pt: 3, borderTop: `1px solid ${tokens.colors.secondary[200]}`, textAlign: "center" }}>
-            <Typography variant="caption" color="text.secondary" display="block">
+          <Box sx={{ mt: 3, pt: 2.5, borderTop: `1px solid ${tokens.colors.secondary[200]}`, textAlign: "center" }}>
+            <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 1 }}>
               Check your welcome email from <strong>noreply@webliix.com</strong> for your default credentials.
             </Typography>
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={() => {
+                setEmail("himanshusharmawwlk@gmail.com");
+                setPassword("customer");
+              }}
+              sx={{ fontSize: "0.75rem", fontWeight: 700, borderRadius: tokens.borderRadius.md }}
+            >
+              Fill Test Account (himanshusharmawwlk@gmail.com)
+            </Button>
           </Box>
         </CardContent>
       </Card>

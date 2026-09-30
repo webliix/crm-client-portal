@@ -5,6 +5,7 @@ import ClientProjectsPage from "./pages/ClientProjectsPage";
 import ClientProjectDetailPage from "./pages/ClientProjectDetailPage";
 import ClientInvoicesPage from "./pages/ClientInvoicesPage";
 import ClientTicketsPage from "./pages/ClientTicketsPage";
+import ClientProfilePage from "./pages/ClientProfilePage";
 import { ClientLayout } from "./layouts/ClientLayout";
 import { authService } from "./services/authService";
 
@@ -59,6 +60,14 @@ export function App() {
           element={
             <ProtectedClientRoute>
               <ClientTicketsPage />
+            </ProtectedClientRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedClientRoute>
+              <ClientProfilePage />
             </ProtectedClientRoute>
           }
         />

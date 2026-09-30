@@ -13,6 +13,7 @@ import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import FolderSpecialOutlinedIcon from "@mui/icons-material/FolderSpecialOutlined";
 import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
+import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
 import { tokens } from "../theme/tokens";
@@ -39,6 +40,7 @@ export function ClientLayout({ children }: Props) {
     { label: "My Projects", path: "/projects", icon: <FolderSpecialOutlinedIcon fontSize="small" /> },
     { label: "Invoices & Billing", path: "/invoices", icon: <ReceiptLongOutlinedIcon fontSize="small" /> },
     { label: "Support Tickets", path: "/tickets", icon: <ConfirmationNumberOutlinedIcon fontSize="small" /> },
+    { label: "Profile & Settings", path: "/profile", icon: <PersonOutlinedIcon fontSize="small" /> },
   ];
 
   const sidebarContent = (
@@ -168,6 +170,9 @@ export function ClientLayout({ children }: Props) {
               </Box>
             </MenuItem>
             <Divider />
+            <MenuItem onClick={() => { setAnchorEl(null); navigate("/profile"); }} sx={{ fontWeight: 600 }}>
+              <PersonOutlinedIcon fontSize="small" sx={{ mr: 1 }} /> My Profile
+            </MenuItem>
             <MenuItem onClick={handleLogout} sx={{ color: tokens.colors.error.main, fontWeight: 600 }}>
               <LogoutOutlinedIcon fontSize="small" sx={{ mr: 1 }} /> Log Out
             </MenuItem>
