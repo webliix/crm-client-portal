@@ -44,22 +44,18 @@ export function ClientLayout({ children }: Props) {
   const sidebarContent = (
     <Box sx={{ width: 260, height: "100%", bgcolor: "#0f172a", color: "#ffffff", display: "flex", flexDirection: "column" }}>
       {/* Brand Header */}
-      <Box sx={{ p: 3, display: "flex", alignItems: "center", gap: 1.5, borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+      <Box sx={{ p: 2.5, display: "flex", alignItems: "center", gap: 1.5, borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
         <Box
+          component="img"
+          src="https://webliix.com/logo.svg"
+          onError={(e: any) => { e.target.onerror = null; e.target.src = "https://webliix.in/favicon.ico"; }}
+          alt="Webliix Logo"
           sx={{
-            width: 36,
             height: 36,
-            borderRadius: tokens.borderRadius.sm,
-            bgcolor: tokens.colors.primary.main,
-            color: "#ffffff",
-            fontWeight: 800,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            maxHeight: 36,
+            objectFit: "contain",
           }}
-        >
-          W
-        </Box>
+        />
         <Box>
           <Typography variant="subtitle1" fontWeight={800} lineHeight={1.2}>
             Webliix Client

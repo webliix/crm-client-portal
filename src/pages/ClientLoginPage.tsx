@@ -64,24 +64,18 @@ export default function ClientLoginPage() {
           {/* Header */}
           <Box sx={{ textAlign: "center", mb: 4 }}>
             <Box
+              component="img"
+              src="https://webliix.com/logo.svg"
+              onError={(e: any) => { e.target.onerror = null; e.target.src = "https://webliix.in/favicon.ico"; }}
+              alt="Webliix Logo"
               sx={{
-                width: 52,
                 height: 52,
-                borderRadius: tokens.borderRadius.lg,
-                bgcolor: tokens.colors.primary.main,
-                color: "#ffffff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontWeight: 800,
-                fontSize: "1.75rem",
+                maxHeight: 52,
+                objectFit: "contain",
                 mx: "auto",
                 mb: 2,
-                boxShadow: `0 8px 16px ${tokens.colors.primary[200]}`,
               }}
-            >
-              W
-            </Box>
+            />
             <Typography variant="h4" fontWeight={800} color={tokens.colors.secondary[900]} gutterBottom>
               Client Portal Login
             </Typography>
