@@ -6,22 +6,33 @@ export interface ClientProject {
   projectCode: string;
   description: string;
   startDate?: string;
+  expectedEndDate?: string;
   dueDate?: string;
+  actualEndDate?: string;
   status: string;
+  priority?: string;
   progressPercentage: number;
+  budget?: number;
+  documentationUrl?: string;
+  architectureNotes?: string;
+  customerName?: string;
+  customerCompanyName?: string;
 }
 
 export interface ClientMilestone {
   id: number;
-  milestoneName: string;
+  title?: string;
+  milestoneName?: string;
   description?: string;
   dueDate?: string;
+  completed?: boolean;
   status?: string;
 }
 
 export interface ClientTask {
   id: number;
-  taskName: string;
+  title?: string;
+  taskName?: string;
   description?: string;
   status: string;
 }
@@ -29,7 +40,9 @@ export interface ClientTask {
 export interface ClientComment {
   id: number;
   authorName: string;
-  comment: string;
+  authorRole?: string;
+  message?: string;
+  comment?: string;
   createdAt: string;
 }
 
@@ -81,9 +94,14 @@ export const projectApi = {
     }
   },
 
-  async addInstruction(projectId: number | string, comment: string): Promise<ClientComment | null> {
+  async addInstruction(projectId: number | string, message: string, authorName?: string): Promise<ClientComment | null> {
     try {
-      const res = await http.post(`/api/v1/projects/${projectId}/comments`, { comment });
+      const res = await http.post(`/api/v1/projects/${projectId}/comments`, {
+        message,
+        comment: message,
+        authorName: authorName || "Client",
+        authorRole: "CLIENT",
+      });
       return res.data?.data ?? null;
     } catch {
       return null;
