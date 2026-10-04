@@ -18,6 +18,14 @@ import ForumOutlinedIcon from "@mui/icons-material/ForumOutlined";
 import PictureAsPdfOutlinedIcon from "@mui/icons-material/PictureAsPdfOutlined";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
+import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
+import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 import { tokens } from "../theme/tokens";
 import {
   projectApi,
@@ -25,6 +33,7 @@ import {
   type ClientMilestone,
   type ClientComment,
 } from "../services/projectApi";
+import { invoiceApi, type ProjectBillingSummary } from "../services/invoiceApi";
 import { BrandLoader } from "../components/common/BrandLoader";
 
 export default function ClientProjectDetailPage() {
@@ -34,6 +43,7 @@ export default function ClientProjectDetailPage() {
   const [project, setProject] = useState<ClientProject | null>(null);
   const [milestones, setMilestones] = useState<ClientMilestone[]>([]);
   const [comments, setComments] = useState<ClientComment[]>([]);
+  const [billing, setBilling] = useState<ProjectBillingSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [newInstruction, setNewInstruction] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -47,11 +57,13 @@ export default function ClientProjectDetailPage() {
       projectApi.getProjectDetails(id),
       projectApi.getMilestones(id),
       projectApi.getComments(id),
-    ]).then(([proj, mls, cmts]) => {
+      invoiceApi.getProjectBilling(id),
+    ]).then(([proj, mls, cmts, bill]) => {
       if (isMounted) {
         setProject(proj);
         setMilestones(mls);
         setComments(cmts);
+        setBilling(bill);
         setLoading(false);
       }
     });
@@ -149,6 +161,28 @@ export default function ClientProjectDetailPage() {
         <div class="section">
           <div class="section-title">Technical Architecture & Specifications</div>
           <div class="code-block">${project.architectureNotes || "Standard Webliix Cloud Microservices Architecture with Spring Boot REST Backend and React Single Page App."}</div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Financial Status & Billing Statement</div>
+          <div class="meta-grid">
+            <div class="meta-item">
+              <div class="meta-label">Contract Budget</div>
+              <div class="meta-value">${billing?.budget ? `₹${billing.budget.toLocaleString()}` : "Custom Scope"}</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Total Billed</div>
+              <div class="meta-value">₹${(billing?.totalBilled ?? 0).toLocaleString()}</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Total Paid</div>
+              <div class="meta-value" style="color: #16a34a;">₹${(billing?.totalPaid ?? 0).toLocaleString()}</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Remaining Contract Balance</div>
+              <div class="meta-value" style="color: #b45309;">₹${(billing?.remainingProjectBalance ?? 0).toLocaleString()}</div>
+            </div>
+          </div>
         </div>
 
         <div class="footer">
@@ -275,6 +309,145 @@ export default function ClientProjectDetailPage() {
               }}
             />
           </Box>
+        </CardContent>
+      </Card>
+
+      {/* Project Financials & Billing Status Card */}
+      <Card
+        sx={{
+          borderRadius: tokens.borderRadius.lg,
+          border: `1px solid ${tokens.colors.secondary[200]}`,
+          mb: 4,
+          boxShadow: tokens.shadows.sm,
+        }}
+      >
+        <CardContent sx={{ p: { xs: 2.5, md: 3.5 } }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2, flexWrap: "wrap", gap: 1 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+              <AccountBalanceWalletOutlinedIcon color="primary" />
+              <Typography variant="h6" fontWeight={800} color={tokens.colors.secondary[900]}>
+                Project Billing & Financial Status
+              </Typography>
+            </Box>
+            {billing && (
+              <Chip
+                label={
+                  billing.remainingProjectBalance === 0 && billing.totalBilled > 0
+                    ? "Fully Settled"
+                    : billing.totalPaid > 0
+                    ? "Partially Paid"
+                    : "Payment Pending"
+                }
+                color={
+                  billing.remainingProjectBalance === 0 && billing.totalBilled > 0
+                    ? "success"
+                    : billing.totalPaid > 0
+                    ? "info"
+                    : "warning"
+                }
+                size="small"
+                sx={{ fontWeight: 700 }}
+              />
+            )}
+          </Box>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            Real-time financial status, approved invoices, payments recorded, and remaining contract bill.
+          </Typography>
+
+          {/* Metric Cards Grid */}
+          <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(4, 1fr)" }, gap: 2, mb: 3 }}>
+            <Box sx={{ p: 2, borderRadius: tokens.borderRadius.md, bgcolor: tokens.colors.secondary[50], border: `1px solid ${tokens.colors.secondary[200]}` }}>
+              <Typography variant="caption" fontWeight={700} color="text.secondary" textTransform="uppercase">
+                Contract Budget
+              </Typography>
+              <Typography variant="h6" fontWeight={800} color={tokens.colors.secondary[900]} sx={{ mt: 0.5 }}>
+                {billing?.budget ? `₹${billing.budget.toLocaleString()}` : "Custom Scope"}
+              </Typography>
+            </Box>
+
+            <Box sx={{ p: 2, borderRadius: tokens.borderRadius.md, bgcolor: tokens.colors.primary[50], border: `1px solid ${tokens.colors.primary[100]}` }}>
+              <Typography variant="caption" fontWeight={700} color={tokens.colors.primary[700]} textTransform="uppercase">
+                Total Invoiced
+              </Typography>
+              <Typography variant="h6" fontWeight={800} color={tokens.colors.primary.main} sx={{ mt: 0.5 }}>
+                ₹{(billing?.totalBilled ?? 0).toLocaleString()}
+              </Typography>
+            </Box>
+
+            <Box sx={{ p: 2, borderRadius: tokens.borderRadius.md, bgcolor: tokens.colors.success[50], border: `1px solid ${tokens.colors.success[100]}` }}>
+              <Typography variant="caption" fontWeight={700} color={tokens.colors.success[700]} textTransform="uppercase">
+                Total Paid
+              </Typography>
+              <Typography variant="h6" fontWeight={800} color={tokens.colors.success[700]} sx={{ mt: 0.5 }}>
+                ₹{(billing?.totalPaid ?? 0).toLocaleString()}
+              </Typography>
+            </Box>
+
+            <Box sx={{ p: 2, borderRadius: tokens.borderRadius.md, bgcolor: tokens.colors.warning[50], border: `1px solid ${tokens.colors.warning[100]}` }}>
+              <Typography variant="caption" fontWeight={700} color={tokens.colors.warning[700]} textTransform="uppercase">
+                Remaining Balance
+              </Typography>
+              <Typography variant="h6" fontWeight={800} color={tokens.colors.warning[700]} sx={{ mt: 0.5 }}>
+                ₹{(billing?.remainingProjectBalance ?? 0).toLocaleString()}
+              </Typography>
+              {billing && billing.pendingDueOnInvoices > 0 && (
+                <Typography variant="caption" color="error.main" fontWeight={600} display="block">
+                  (₹{billing.pendingDueOnInvoices.toLocaleString()} due on issued bills)
+                </Typography>
+              )}
+            </Box>
+          </Box>
+
+          {/* Project Invoices Table */}
+          {billing?.invoices && billing.invoices.length > 0 ? (
+            <TableContainer sx={{ border: `1px solid ${tokens.colors.secondary[200]}`, borderRadius: tokens.borderRadius.md }}>
+              <Table size="small">
+                <TableHead sx={{ bgcolor: tokens.colors.secondary[100] }}>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 700 }}>Invoice #</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>Issue Date</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>Due Date</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>Total Billed</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>Paid</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>Pending Due</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {billing.invoices.map((inv) => (
+                    <TableRow key={inv.id} hover>
+                      <TableCell sx={{ fontWeight: 700, color: tokens.colors.primary.main }}>
+                        {inv.invoiceNumber}
+                      </TableCell>
+                      <TableCell>{inv.issueDate ? new Date(inv.issueDate).toLocaleDateString() : "—"}</TableCell>
+                      <TableCell>{inv.dueDate ? new Date(inv.dueDate).toLocaleDateString() : "—"}</TableCell>
+                      <TableCell sx={{ fontWeight: 700 }}>₹{(inv.totalAmount || 0).toLocaleString()}</TableCell>
+                      <TableCell sx={{ color: tokens.colors.success[700], fontWeight: 600 }}>
+                        ₹{(inv.paidAmount || 0).toLocaleString()}
+                      </TableCell>
+                      <TableCell sx={{ color: (inv.pendingAmount || 0) > 0 ? tokens.colors.warning[700] : "text.secondary", fontWeight: 600 }}>
+                        ₹{(inv.pendingAmount || 0).toLocaleString()}
+                      </TableCell>
+                      <TableCell>
+                        <Chip
+                          label={inv.status}
+                          size="small"
+                          color={inv.status === "PAID" ? "success" : inv.status === "PARTIALLY_PAID" ? "info" : "warning"}
+                          sx={{ fontWeight: 700, fontSize: "0.75rem" }}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          ) : (
+            <Box sx={{ p: 2, textAlign: "center", bgcolor: tokens.colors.secondary[50], borderRadius: tokens.borderRadius.md, border: `1px dashed ${tokens.colors.secondary[300]}` }}>
+              <Typography variant="body2" color="text.secondary">
+                No invoices have been issued for this project yet. Invoices generated by your project team will appear here automatically.
+              </Typography>
+            </Box>
+          )}
         </CardContent>
       </Card>
 

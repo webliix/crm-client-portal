@@ -131,7 +131,9 @@ export default function ClientInvoicesPage() {
                   <TableCell sx={{ fontWeight: 700 }}>Project / Service</TableCell>
                   <TableCell sx={{ fontWeight: 700 }}>Issue Date</TableCell>
                   <TableCell sx={{ fontWeight: 700 }}>Due Date</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Total Amount</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Total Billed</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Paid</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Pending Due</TableCell>
                   <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
                 </TableRow>
               </TableHead>
@@ -142,15 +144,29 @@ export default function ClientInvoicesPage() {
                       {inv.invoiceNumber}
                     </TableCell>
                     <TableCell sx={{ fontWeight: 600 }}>
-                      {inv.project?.projectName || "Webliix Software Services"}
+                      {inv.projectName || inv.project?.projectName || "Webliix Software Services"}
                     </TableCell>
                     <TableCell>{inv.issueDate ? new Date(inv.issueDate).toLocaleDateString() : "—"}</TableCell>
                     <TableCell>{inv.dueDate ? new Date(inv.dueDate).toLocaleDateString() : "—"}</TableCell>
                     <TableCell sx={{ fontWeight: 700 }}>₹{(inv.totalAmount || 0).toLocaleString()}</TableCell>
+                    <TableCell sx={{ color: tokens.colors.success[700], fontWeight: 600 }}>
+                      ₹{(inv.paidAmount || 0).toLocaleString()}
+                    </TableCell>
+                    <TableCell sx={{ color: (inv.pendingAmount || 0) > 0 ? tokens.colors.warning[700] : "text.secondary", fontWeight: 600 }}>
+                      ₹{(inv.pendingAmount || 0).toLocaleString()}
+                    </TableCell>
                     <TableCell>
                       <Chip
                         label={inv.status || "PAID"}
-                        color={inv.status === "PAID" ? "success" : "warning"}
+                        color={
+                          inv.status === "PAID"
+                            ? "success"
+                            : inv.status === "PARTIALLY_PAID"
+                            ? "info"
+                            : inv.status === "OVERDUE"
+                            ? "error"
+                            : "warning"
+                        }
                         size="small"
                         sx={{ fontWeight: 700 }}
                       />
