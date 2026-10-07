@@ -12,6 +12,8 @@ import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import SparklesIcon from "@mui/icons-material/AutoAwesome";
+import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
+import CampaignOutlinedIcon from "@mui/icons-material/CampaignOutlined";
 import { tokens } from "../theme/tokens";
 import { authService } from "../services/authService";
 import { projectApi, type ClientProject } from "../services/projectApi";
@@ -258,6 +260,118 @@ export default function ClientDashboardPage() {
           ))}
         </Box>
       )}
+
+      {/* Offers & Platform Updates Highlights */}
+      <Box sx={{ mt: 5 }}>
+        <Typography variant="h5" fontWeight={800} color={tokens.colors.secondary[900]} sx={{ mb: 2.5 }}>
+          Client Growth & Platform Status
+        </Typography>
+
+        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(2, 1fr)" }, gap: 3 }}>
+          {/* Offers Card */}
+          <Card
+            sx={{
+              borderRadius: tokens.borderRadius.lg,
+              border: `1px solid ${tokens.colors.primary[200]}`,
+              background: `linear-gradient(135deg, ${tokens.colors.primary[50]} 0%, #ffffff 100%)`,
+              p: 3.5,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              boxShadow: tokens.shadows.sm,
+              transition: "transform 0.2s ease, box-shadow 0.2s ease",
+              "&:hover": { transform: "translateY(-2px)", boxShadow: tokens.shadows.md },
+            }}
+          >
+            <Box>
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
+                <Box
+                  sx={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: tokens.borderRadius.md,
+                    bgcolor: tokens.colors.primary.main,
+                    color: "#ffffff",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <LocalOfferOutlinedIcon />
+                </Box>
+                <Chip label="Exclusive Deals" color="primary" size="small" sx={{ fontWeight: 800 }} />
+              </Box>
+
+              <Typography variant="h6" fontWeight={800} color={tokens.colors.secondary[900]} gutterBottom>
+                Special Offers & Modernization Credits
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6, mb: 3 }}>
+                Claim exclusive discounts on AI Workflow Copilot integration, Cloud DevOps optimization, and mobile app companion expansions.
+              </Typography>
+            </Box>
+
+            <Button
+              variant="contained"
+              endIcon={<ArrowForwardIcon />}
+              onClick={() => navigate("/offers")}
+              sx={{ alignSelf: "flex-start", fontWeight: 700, borderRadius: tokens.borderRadius.md }}
+            >
+              Browse Special Offers
+            </Button>
+          </Card>
+
+          {/* Platform Updates Card */}
+          <Card
+            sx={{
+              borderRadius: tokens.borderRadius.lg,
+              border: `1px solid ${tokens.colors.secondary[200]}`,
+              p: 3.5,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              boxShadow: tokens.shadows.sm,
+              transition: "transform 0.2s ease, box-shadow 0.2s ease",
+              "&:hover": { transform: "translateY(-2px)", boxShadow: tokens.shadows.md },
+            }}
+          >
+            <Box>
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
+                <Box
+                  sx={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: tokens.borderRadius.md,
+                    bgcolor: `${tokens.colors.primary[50]}`,
+                    color: tokens.colors.primary.main,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <CampaignOutlinedIcon />
+                </Box>
+                <Chip label="v2.5.0 Live" color="success" size="small" sx={{ fontWeight: 800 }} />
+              </Box>
+
+              <Typography variant="h6" fontWeight={800} color={tokens.colors.secondary[900]} gutterBottom>
+                Platform Updates & Changelog
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6, mb: 3 }}>
+                Inspect the latest release notes, new self-service capabilities, scheduled infrastructure maintenance windows, and security patches.
+              </Typography>
+            </Box>
+
+            <Button
+              variant="outlined"
+              endIcon={<ArrowForwardIcon />}
+              onClick={() => navigate("/updates")}
+              sx={{ alignSelf: "flex-start", fontWeight: 700, borderRadius: tokens.borderRadius.md }}
+            >
+              View Platform Changelog
+            </Button>
+          </Card>
+        </Box>
+      </Box>
     </Box>
   );
 }

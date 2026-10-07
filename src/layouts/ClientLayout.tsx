@@ -14,8 +14,11 @@ import FolderSpecialOutlinedIcon from "@mui/icons-material/FolderSpecialOutlined
 import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
+import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
+import CampaignOutlinedIcon from "@mui/icons-material/CampaignOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
+import Chip from "@mui/material/Chip";
 import { tokens } from "../theme/tokens";
 import { authService } from "../services/authService";
 
@@ -40,6 +43,8 @@ export function ClientLayout({ children }: Props) {
     { label: "My Projects", path: "/projects", icon: <FolderSpecialOutlinedIcon fontSize="small" /> },
     { label: "Invoices & Billing", path: "/invoices", icon: <ReceiptLongOutlinedIcon fontSize="small" /> },
     { label: "Support Tickets", path: "/tickets", icon: <ConfirmationNumberOutlinedIcon fontSize="small" /> },
+    { label: "Special Offers", path: "/offers", icon: <LocalOfferOutlinedIcon fontSize="small" />, badge: "Deals" },
+    { label: "Platform Updates", path: "/updates", icon: <CampaignOutlinedIcon fontSize="small" /> },
     { label: "Profile & Settings", path: "/profile", icon: <PersonOutlinedIcon fontSize="small" /> },
   ];
 
@@ -92,7 +97,22 @@ export function ClientLayout({ children }: Props) {
                 },
               }}
             >
-              {item.label}
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+                <span>{item.label}</span>
+                {item.badge && (
+                  <Chip
+                    label={item.badge}
+                    size="small"
+                    sx={{
+                      height: 18,
+                      fontSize: "0.625rem",
+                      fontWeight: 800,
+                      bgcolor: active ? "#ffffff" : tokens.colors.primary.main,
+                      color: active ? tokens.colors.primary.main : "#ffffff",
+                    }}
+                  />
+                )}
+              </Box>
             </Button>
           );
         })}
