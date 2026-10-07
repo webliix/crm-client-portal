@@ -8,6 +8,7 @@ import ClientTicketsPage from "./pages/ClientTicketsPage";
 import ClientProfilePage from "./pages/ClientProfilePage";
 import ClientOffersPage from "./pages/ClientOffersPage";
 import ClientUpdatesPage from "./pages/ClientUpdatesPage";
+import ClientLiveChatPage from "./pages/ClientLiveChatPage";
 import { ClientLayout } from "./layouts/ClientLayout";
 import { authService } from "./services/authService";
 
@@ -46,6 +47,14 @@ export function App() {
           element={
             <ProtectedClientRoute>
               <ClientProjectDetailPage />
+            </ProtectedClientRoute>
+          }
+        />
+        <Route
+          path="/chat"
+          element={
+            <ProtectedClientRoute>
+              <ClientLiveChatPage />
             </ProtectedClientRoute>
           }
         />

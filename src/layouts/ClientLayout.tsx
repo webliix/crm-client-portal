@@ -17,6 +17,7 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import CampaignOutlinedIcon from "@mui/icons-material/CampaignOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
 import Chip from "@mui/material/Chip";
 import { tokens } from "../theme/tokens";
@@ -41,6 +42,7 @@ export function ClientLayout({ children }: Props) {
   const navItems = [
     { label: "Overview", path: "/dashboard", icon: <DashboardOutlinedIcon fontSize="small" /> },
     { label: "My Projects", path: "/projects", icon: <FolderSpecialOutlinedIcon fontSize="small" /> },
+    { label: "Live Project Chat", path: "/chat", icon: <ChatBubbleOutlineOutlinedIcon fontSize="small" />, badge: "Live" },
     { label: "Invoices & Billing", path: "/invoices", icon: <ReceiptLongOutlinedIcon fontSize="small" /> },
     { label: "Support Tickets", path: "/tickets", icon: <ConfirmationNumberOutlinedIcon fontSize="small" /> },
     { label: "Special Offers", path: "/offers", icon: <LocalOfferOutlinedIcon fontSize="small" />, badge: "Deals" },
@@ -202,6 +204,40 @@ export function ClientLayout({ children }: Props) {
         <Box component="main" sx={{ flex: 1 }}>
           {children}
         </Box>
+
+        {/* Floating Live Chat Button */}
+        {location.pathname !== "/chat" && (
+          <Box
+            sx={{
+              position: "fixed",
+              bottom: 24,
+              right: 24,
+              zIndex: 1000,
+            }}
+          >
+            <Button
+              variant="contained"
+              component={Link}
+              to="/chat"
+              startIcon={<ChatBubbleOutlineOutlinedIcon />}
+              sx={{
+                bgcolor: tokens.colors.primary.main,
+                color: "#ffffff",
+                borderRadius: 50,
+                px: 2.5,
+                py: 1.25,
+                fontWeight: 700,
+                boxShadow: "0 4px 14px rgba(0, 102, 255, 0.35)",
+                textTransform: "none",
+                "&:hover": {
+                  bgcolor: tokens.colors.primary[700],
+                },
+              }}
+            >
+              Chat with Team
+            </Button>
+          </Box>
+        )}
       </Box>
     </Box>
   );

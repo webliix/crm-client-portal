@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -12,6 +12,7 @@ import DialogActions from "@mui/material/DialogActions";
 import TextField from "@mui/material/TextField";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
+import CircularProgress from "@mui/material/CircularProgress";
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
@@ -24,9 +25,10 @@ import SendIcon from "@mui/icons-material/Send";
 import { tokens } from "../theme/tokens";
 import { authService } from "../services/authService";
 import { ticketApi } from "../services/ticketApi";
+import { offerApi, type ClientOffer } from "../services/offerApi";
 
-interface OfferItem {
-  id: string;
+interface OfferDisplayItem {
+  id: string | number;
   badge: string;
   badgeColor: "primary" | "secondary" | "success" | "warning";
   title: string;
@@ -35,10 +37,9 @@ interface OfferItem {
   description: string;
   features: string[];
   expiresAt: string;
-  icon: typeof AutoAwesomeIcon;
 }
 
-const EXCLUSIVE_OFFERS: OfferItem[] = [
+const FALLBACK_OFFERS: OfferDisplayItem[] = [
   {
     id: "ai-copilot",
     badge: "Most Popular",
@@ -54,7 +55,6 @@ const EXCLUSIVE_OFFERS: OfferItem[] = [
       "Dedicated AI architect consultation",
     ],
     expiresAt: "November 30, 2026",
-    icon: AutoAwesomeIcon,
   },
   {
     id: "cloud-optimization",
@@ -71,7 +71,6 @@ const EXCLUSIVE_OFFERS: OfferItem[] = [
       "24/7 cloud monitoring & telemetry alerts",
     ],
     expiresAt: "December 15, 2026",
-    icon: CloudDoneOutlinedIcon,
   },
   {
     id: "security-audit",
@@ -88,7 +87,6 @@ const EXCLUSIVE_OFFERS: OfferItem[] = [
       "Actionable remediation patch guidance",
     ],
     expiresAt: "December 31, 2026",
-    icon: SecurityOutlinedIcon,
   },
   {
     id: "mobile-booster",
@@ -105,24 +103,48 @@ const EXCLUSIVE_OFFERS: OfferItem[] = [
       "Cross-platform responsive design fidelity",
     ],
     expiresAt: "November 15, 2026",
-    icon: SmartphoneOutlinedIcon,
   },
 ];
 
 export default function ClientOffersPage() {
-  const user = authService.getCurrentUser();
+  const [offers, setOffers] = useState<OfferDisplayItem[]>(FALLBACK_OFFERS);
+  const [loading, setLoading] = useState(true);
   const [claimModalOpen, setClaimModalOpen] = useState(false);
-  const [selectedOffer, setSelectedOffer] = useState<OfferItem | null>(null);
+  const [selectedOffer, setSelectedOffer] = useState<OfferDisplayItem | null>(null);
   const [claimNotes, setClaimNotes] = useState("");
   const [submittingClaim, setSubmittingClaim] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState<string | null>(null);
+
+  useEffect(() => {
+    offerApi.getActiveOffers().then((data) => {
+      if (data && data.length > 0) {
+        const formatted: OfferDisplayItem[] = data.map((d) => ({
+          id: d.id,
+          badge: d.badge || "Special Deal",
+          badgeColor: (d.badgeColor as any) || "primary",
+          title: d.title,
+          discount: d.discount,
+          code: d.code,
+          description: d.description || "",
+          features: d.features
+            ? d.features.split("\n").filter((f) => f.trim().length > 0)
+            : ["Full service scoping", "Direct engineer consultation", "Priority implementation queue"],
+          expiresAt: d.expiresAt || "Ongoing / Limited Time",
+        }));
+        setOffers(formatted);
+      }
+      setLoading(false);
+    }).catch(() => {
+      setLoading(false);
+    });
+  }, []);
 
   const handleCopyCode = (code: string) => {
     navigator.clipboard.writeText(code);
     setSnackbarMsg(`Promo code "${code}" copied to clipboard!`);
   };
 
-  const handleOpenClaimModal = (offer: OfferItem) => {
+  const handleOpenClaimModal = (offer: OfferDisplayItem) => {
     setSelectedOffer(offer);
     setClaimNotes(`Hi Webliix Team, I would like to claim the "${offer.title}" offer (Code: ${offer.code}) for our account.`);
     setClaimModalOpen(true);
@@ -174,50 +196,54 @@ export default function ClientOffersPage() {
       </Card>
 
       {/* Offers Grid */}
-      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(2, 1fr)" }, gap: 3 }}>
-        {EXCLUSIVE_OFFERS.map((offer) => {
-          const IconComponent = offer.icon;
-          return (
-            <Box key={offer.id}>
-              <Card
-                sx={{
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  borderRadius: tokens.borderRadius.lg,
-                  border: `1px solid ${tokens.colors.secondary[200]}`,
-                  boxShadow: tokens.shadows.sm,
-                  transition: "all 0.25s ease",
-                  "&:hover": {
-                    transform: "translateY(-4px)",
-                    boxShadow: tokens.shadows.lg,
-                    borderColor: tokens.colors.primary[300],
-                  },
-                }}
-              >
-                <CardContent sx={{ p: 3.5, flex: 1, display: "flex", flexDirection: "column" }}>
-                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
-                    <Box
-                      sx={{
-                        width: 48,
-                        height: 48,
-                        borderRadius: tokens.borderRadius.md,
-                        bgcolor: `${tokens.colors.primary[50]}`,
-                        color: tokens.colors.primary.main,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <IconComponent fontSize="medium" />
+      {loading ? (
+        <Box sx={{ py: 6, display: "flex", justifyContent: "center" }}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(2, 1fr)" }, gap: 3 }}>
+          {offers.map((offer) => {
+            return (
+              <Box key={offer.id}>
+                <Card
+                  sx={{
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    borderRadius: tokens.borderRadius.lg,
+                    border: `1px solid ${tokens.colors.secondary[200]}`,
+                    boxShadow: tokens.shadows.sm,
+                    transition: "all 0.25s ease",
+                    "&:hover": {
+                      transform: "translateY(-4px)",
+                      boxShadow: tokens.shadows.lg,
+                      borderColor: tokens.colors.primary[300],
+                    },
+                  }}
+                >
+                  <CardContent sx={{ p: 3.5, flex: 1, display: "flex", flexDirection: "column" }}>
+                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
+                      <Box
+                        sx={{
+                          width: 48,
+                          height: 48,
+                          borderRadius: tokens.borderRadius.md,
+                          bgcolor: `${tokens.colors.primary[50]}`,
+                          color: tokens.colors.primary.main,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <LocalOfferOutlinedIcon fontSize="medium" />
+                      </Box>
+                      <Chip
+                        label={offer.badge}
+                        color={offer.badgeColor}
+                        size="small"
+                        sx={{ fontWeight: 800, fontSize: "0.75rem" }}
+                      />
                     </Box>
-                    <Chip
-                      label={offer.badge}
-                      color={offer.badgeColor}
-                      size="small"
-                      sx={{ fontWeight: 800, fontSize: "0.75rem" }}
-                    />
-                  </Box>
 
                   <Typography variant="h6" fontWeight={800} color={tokens.colors.secondary[900]} gutterBottom>
                     {offer.title}
@@ -299,6 +325,7 @@ export default function ClientOffersPage() {
           );
         })}
       </Box>
+      )}
 
       {/* Claim Offer Dialog */}
       <Dialog

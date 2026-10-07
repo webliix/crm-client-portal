@@ -1,19 +1,35 @@
 import { http } from "./http";
 
+export interface InvoiceItem {
+  id?: number;
+  itemName: string;
+  description?: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice?: number;
+}
+
 export interface ClientInvoice {
   id: number;
   invoiceNumber: string;
   projectId?: number;
   customerId?: number;
   customerName?: string;
+  customerCompanyName?: string;
   projectName?: string;
+  projectCode?: string;
   totalAmount: number;
+  subtotal?: number;
+  taxAmount?: number;
+  discountAmount?: number;
   paidAmount: number;
   pendingAmount: number;
   status: string;
   issueDate?: string;
   dueDate?: string;
   currency?: string;
+  notes?: string;
+  items?: InvoiceItem[];
   project?: {
     id?: number;
     projectName?: string;
@@ -47,6 +63,15 @@ export const invoiceApi = {
       return data?.content ?? [];
     } catch {
       return [];
+    }
+  },
+
+  async getInvoiceDetails(id: number | string): Promise<ClientInvoice | null> {
+    try {
+      const res = await http.get(`/api/v1/invoices/${id}`);
+      return res.data?.data ?? null;
+    } catch {
+      return null;
     }
   },
 
