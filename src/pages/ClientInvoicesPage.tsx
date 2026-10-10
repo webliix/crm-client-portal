@@ -326,12 +326,18 @@ export default function ClientInvoicesPage() {
                   <Typography variant="body2"><strong>Client / Company:</strong> {selectedInvoice.customerCompanyName || selectedInvoice.customerName || "Webliix Client"}</Typography>
                   <Typography variant="body2"><strong>Contact Person:</strong> {selectedInvoice.customerName || selectedInvoice.customerCompanyName || "Authorized Signatory"}</Typography>
                   <Typography variant="body2"><strong>Client ID#:</strong> #{selectedInvoice.customerId || selectedInvoice.id}</Typography>
-                  <Typography variant="body2"><strong>Project:</strong> {selectedInvoice.projectName || selectedInvoice.project?.projectName || "Engineering Services"}</Typography>
+                  <Typography variant="body2">
+                    <strong>Project Name:</strong> {selectedInvoice.projectName || selectedInvoice.project?.projectName || "Engineering Services"}
+                    {selectedInvoice.projectCode ? ` (${selectedInvoice.projectCode})` : ""}
+                  </Typography>
+                  {selectedInvoice.projectId && (
+                    <Typography variant="body2"><strong>Project Ref ID:</strong> #{selectedInvoice.projectId}</Typography>
+                  )}
                 </Box>
 
                 <Box>
                   <Typography variant="subtitle2" fontWeight={900} color="#0f172a" sx={{ borderBottom: "1px solid #cbd5e1", pb: 0.5, mb: 1 }}>
-                    Ship to:
+                    Ship to / Deployment:
                   </Typography>
                   <Typography variant="body2"><strong>Recipient:</strong> {selectedInvoice.customerCompanyName || selectedInvoice.customerName || "Webliix Client"}</Typography>
                   <Typography variant="body2"><strong>Delivery:</strong> Digital Delivery / Remote Deployment</Typography>
@@ -347,8 +353,10 @@ export default function ClientInvoicesPage() {
                   <Typography variant="body2" fontWeight={800}>{selectedInvoice.dueDate ? new Date(selectedInvoice.dueDate).toLocaleDateString("en-GB") : "Upon Receipt"}</Typography>
                 </Box>
                 <Box>
-                  <Typography variant="caption" fontWeight={800} color="text.secondary">SALESPERSON / LEAD</Typography>
-                  <Typography variant="body2" fontWeight={800}>Webliix Direct</Typography>
+                  <Typography variant="caption" fontWeight={800} color="text.secondary">ASSOCIATED PROJECT</Typography>
+                  <Typography variant="body2" fontWeight={800} sx={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {selectedInvoice.projectName || selectedInvoice.project?.projectName || "Webliix Project"}
+                  </Typography>
                 </Box>
                 <Box>
                   <Typography variant="caption" fontWeight={800} color="text.secondary">PAYMENT TERMS</Typography>
@@ -411,9 +419,27 @@ export default function ClientInvoicesPage() {
                 </Table>
               </TableContainer>
 
-              {/* Financial Totals Block */}
-              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                <Box sx={{ width: { xs: "100%", sm: 380 }, border: "1px solid #cbd5e1", borderRadius: 1.5, p: 2, bgcolor: "#f8fafc", display: "flex", flexDirection: "column", gap: 1 }}>
+              {/* Financial Totals Block & Invoice Notes */}
+              <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr auto" }, gap: 3, alignItems: "start" }}>
+                {/* Notes and Instructions */}
+                <Box sx={{ border: "1px solid #cbd5e1", borderRadius: 1.5, p: 2, bgcolor: "#f8fafc" }}>
+                  <Typography variant="subtitle2" fontWeight={900} color="#0f172a" sx={{ borderBottom: "1px solid #cbd5e1", pb: 0.5, mb: 1 }}>
+                    Notes & Terms of Service:
+                  </Typography>
+                  <Typography variant="body2" color="#334155" sx={{ whiteSpace: "pre-wrap", lineHeight: 1.6 }}>
+                    {selectedInvoice.notes || "Payment is due per project milestone delivery. For wire transfers or queries, contact billing at contact@webliix.com."}
+                  </Typography>
+                  {selectedInvoice.projectName && (
+                    <Box sx={{ mt: 1.5, pt: 1, borderTop: "1px dashed #cbd5e1" }}>
+                      <Typography variant="caption" color="text.secondary" sx={{ display: "block" }}>
+                        <strong>Project Reference:</strong> {selectedInvoice.projectName} {selectedInvoice.projectCode ? `[${selectedInvoice.projectCode}]` : ""}
+                      </Typography>
+                    </Box>
+                  )}
+                </Box>
+
+                {/* Financial Totals */}
+                <Box sx={{ width: { xs: "100%", sm: 360 }, border: "1px solid #cbd5e1", borderRadius: 1.5, p: 2, bgcolor: "#f8fafc", display: "flex", flexDirection: "column", gap: 1 }}>
                   <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                     <Typography variant="body2" color="text.secondary" fontWeight={600}>Total Discount:</Typography>
                     <Typography variant="body2" fontWeight={700}>₹{(selectedInvoice.discountAmount || 0).toLocaleString()}/-</Typography>
