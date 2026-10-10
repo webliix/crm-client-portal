@@ -89,11 +89,13 @@ export default function ClientDashboardPage() {
       {/* KPI Overview Grid */}
       <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(3, 1fr)" }, gap: 3, mb: 4 }}>
         <Card
+          onClick={() => navigate("/projects")}
           sx={{
             borderRadius: tokens.borderRadius.lg,
             border: `1px solid ${tokens.colors.secondary[200]}`,
-            transition: "transform 0.2s ease, box-shadow 0.2s ease",
-            "&:hover": { transform: "translateY(-2px)", boxShadow: tokens.shadows.md },
+            cursor: "pointer",
+            transition: "transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease",
+            "&:hover": { transform: "translateY(-2px)", boxShadow: tokens.shadows.md, borderColor: tokens.colors.primary.main },
           }}
         >
           <CardContent sx={{ p: 3, display: "flex", alignItems: "center", gap: 2.5 }}>
@@ -120,11 +122,13 @@ export default function ClientDashboardPage() {
         </Card>
 
         <Card
+          onClick={() => navigate("/invoices")}
           sx={{
             borderRadius: tokens.borderRadius.lg,
             border: `1px solid ${tokens.colors.secondary[200]}`,
-            transition: "transform 0.2s ease, box-shadow 0.2s ease",
-            "&:hover": { transform: "translateY(-2px)", boxShadow: tokens.shadows.md },
+            cursor: "pointer",
+            transition: "transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease",
+            "&:hover": { transform: "translateY(-2px)", boxShadow: tokens.shadows.md, borderColor: tokens.colors.success.main },
           }}
         >
           <CardContent sx={{ p: 3, display: "flex", alignItems: "center", gap: 2.5 }}>
@@ -151,11 +155,13 @@ export default function ClientDashboardPage() {
         </Card>
 
         <Card
+          onClick={() => navigate("/tickets")}
           sx={{
             borderRadius: tokens.borderRadius.lg,
             border: `1px solid ${tokens.colors.secondary[200]}`,
-            transition: "transform 0.2s ease, box-shadow 0.2s ease",
-            "&:hover": { transform: "translateY(-2px)", boxShadow: tokens.shadows.md },
+            cursor: "pointer",
+            transition: "transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease",
+            "&:hover": { transform: "translateY(-2px)", boxShadow: tokens.shadows.md, borderColor: tokens.colors.warning.main },
           }}
         >
           <CardContent sx={{ p: 3, display: "flex", alignItems: "center", gap: 2.5 }}>
@@ -320,7 +326,7 @@ export default function ClientDashboardPage() {
             </Button>
           </Card>
 
-          {/* Platform Updates Card */}
+          {/* Live Support & Chat History Card */}
           <Card
             sx={{
               borderRadius: tokens.borderRadius.lg,
@@ -341,33 +347,33 @@ export default function ClientDashboardPage() {
                     width: 44,
                     height: 44,
                     borderRadius: tokens.borderRadius.md,
-                    bgcolor: `${tokens.colors.primary[50]}`,
+                    bgcolor: tokens.colors.primary[50],
                     color: tokens.colors.primary.main,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
-                  <CampaignOutlinedIcon />
+                  <ConfirmationNumberOutlinedIcon />
                 </Box>
-                <Chip label="v2.5.0 Live" color="success" size="small" sx={{ fontWeight: 800 }} />
+                <Chip label="24/7 Dedicated Support" color="info" size="small" sx={{ fontWeight: 800 }} />
               </Box>
 
               <Typography variant="h6" fontWeight={800} color={tokens.colors.secondary[900]} gutterBottom>
-                Platform Updates & Changelog
+                Live Support & Discussion History
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6, mb: 3 }}>
-                Inspect the latest release notes, new self-service capabilities, scheduled infrastructure maintenance windows, and security patches.
+                Connect directly with your engineering leads, review prior ticket resolutions, and access complete project chat history at any time.
               </Typography>
             </Box>
 
             <Button
               variant="outlined"
               endIcon={<ArrowForwardIcon />}
-              onClick={() => navigate("/updates")}
+              onClick={() => navigate("/tickets")}
               sx={{ alignSelf: "flex-start", fontWeight: 700, borderRadius: tokens.borderRadius.md }}
             >
-              View Platform Changelog
+              Open Support & Chat History
             </Button>
           </Card>
         </Box>

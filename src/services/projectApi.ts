@@ -46,6 +46,22 @@ export interface ClientComment {
   createdAt: string;
 }
 
+export interface ClientWorkLog {
+  id: number;
+  logDate: string;
+  workSummary: string;
+  hoursWorked?: number;
+  workUnits?: number;
+  workCost?: number;
+  projectId?: number;
+  projectName?: string;
+  taskId?: number;
+  taskTitle?: string;
+  tasksCompleted?: string;
+  status: string;
+  createdAt?: string;
+}
+
 export const projectApi = {
   async getMyProjects(): Promise<ClientProject[]> {
     try {
@@ -105,6 +121,15 @@ export const projectApi = {
       return res.data?.data ?? null;
     } catch {
       return null;
+    }
+  },
+
+  async getProjectWorkLogs(projectId: number | string): Promise<ClientWorkLog[]> {
+    try {
+      const res = await http.get(`/api/v1/projects/${projectId}/work-logs`);
+      return res.data?.data ?? [];
+    } catch {
+      return [];
     }
   },
 };

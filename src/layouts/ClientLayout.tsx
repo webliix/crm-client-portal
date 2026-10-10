@@ -22,6 +22,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Chip from "@mui/material/Chip";
 import { tokens } from "../theme/tokens";
 import { authService } from "../services/authService";
+import { ClientFloatingChatWidget } from "../components/chat/ClientFloatingChatWidget";
 
 interface Props {
   children: ReactNode;
@@ -42,11 +43,9 @@ export function ClientLayout({ children }: Props) {
   const navItems = [
     { label: "Overview", path: "/dashboard", icon: <DashboardOutlinedIcon fontSize="small" /> },
     { label: "My Projects", path: "/projects", icon: <FolderSpecialOutlinedIcon fontSize="small" /> },
-    { label: "Live Project Chat", path: "/chat", icon: <ChatBubbleOutlineOutlinedIcon fontSize="small" />, badge: "Live" },
     { label: "Invoices & Billing", path: "/invoices", icon: <ReceiptLongOutlinedIcon fontSize="small" /> },
-    { label: "Support Tickets", path: "/tickets", icon: <ConfirmationNumberOutlinedIcon fontSize="small" /> },
+    { label: "Support & Chat History", path: "/tickets", icon: <ConfirmationNumberOutlinedIcon fontSize="small" /> },
     { label: "Special Offers", path: "/offers", icon: <LocalOfferOutlinedIcon fontSize="small" />, badge: "Deals" },
-    { label: "Platform Updates", path: "/updates", icon: <CampaignOutlinedIcon fontSize="small" /> },
     { label: "Profile & Settings", path: "/profile", icon: <PersonOutlinedIcon fontSize="small" /> },
   ];
 
@@ -159,7 +158,7 @@ export function ClientLayout({ children }: Props) {
               <MenuIcon />
             </IconButton>
             <Typography variant="subtitle1" fontWeight={700} color={tokens.colors.secondary[900]}>
-              Client Customer Workspace
+              Client Workspace
             </Typography>
           </Box>
 
@@ -169,7 +168,7 @@ export function ClientLayout({ children }: Props) {
                 {user?.name || "Client User"}
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                {user?.email || "customer@webliix.in"}
+                {user?.email || "client@webliix.com"}
               </Typography>
             </Box>
             <IconButton onClick={(e) => setAnchorEl(e.currentTarget)} size="small">
@@ -205,39 +204,8 @@ export function ClientLayout({ children }: Props) {
           {children}
         </Box>
 
-        {/* Floating Live Chat Button */}
-        {location.pathname !== "/chat" && (
-          <Box
-            sx={{
-              position: "fixed",
-              bottom: 24,
-              right: 24,
-              zIndex: 1000,
-            }}
-          >
-            <Button
-              variant="contained"
-              component={Link}
-              to="/chat"
-              startIcon={<ChatBubbleOutlineOutlinedIcon />}
-              sx={{
-                bgcolor: tokens.colors.primary.main,
-                color: "#ffffff",
-                borderRadius: 50,
-                px: 2.5,
-                py: 1.25,
-                fontWeight: 700,
-                boxShadow: "0 4px 14px rgba(0, 102, 255, 0.35)",
-                textTransform: "none",
-                "&:hover": {
-                  bgcolor: tokens.colors.primary[700],
-                },
-              }}
-            >
-              Chat with Team
-            </Button>
-          </Box>
-        )}
+        {/* Floating Live Chat Widget */}
+        <ClientFloatingChatWidget />
       </Box>
     </Box>
   );

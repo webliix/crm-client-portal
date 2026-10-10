@@ -287,202 +287,188 @@ export default function ClientInvoicesPage() {
           ) : selectedInvoice ? (
             <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
               {/* Printable Header */}
-              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 2 }}>
-                <Box>
+              {/* ========================================================= */}
+              {/* EXACT WEBLIIX OFFICIAL INVOICE TEMPLATE (PDF MATCH)        */}
+              {/* ========================================================= */}
+              {/* Header: Logo and Invoice Date */}
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", pb: 1.5, borderBottom: "2px solid #0f172a" }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <Box
                     component="img"
                     src="https://res.cloudinary.com/vhth8clt/image/upload/v1788210409/logo.png"
                     alt="Webliix Logo"
-                    sx={{ height: 42, mb: 1, objectFit: "contain" }}
+                    sx={{ height: 38, objectFit: "contain" }}
                   />
-                  <Typography variant="h6" fontWeight={800} color={tokens.colors.secondary[900]}>
-                    Webliix Technologies Pvt Ltd
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Engineering, Web Applications & Digital Solutions
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary" sx={{ display: "block" }}>
-                    Email: contact@webliix.com | Portal: login.webliix.com
+                  <Typography variant="h5" fontWeight={900} sx={{ letterSpacing: "-0.5px", color: "#0f172a" }}>
+                    webliix
                   </Typography>
                 </Box>
-                <Box sx={{ textAlign: { xs: "left", sm: "right" } }}>
-                  <Typography variant="h5" fontWeight={900} color={tokens.colors.primary.main} letterSpacing="0.05em">
-                    TAX INVOICE
+                <Box sx={{ textAlign: "right" }}>
+                  <Typography variant="body2" fontWeight={800} color="#0f172a">
+                    DATE: {selectedInvoice.issueDate ? new Date(selectedInvoice.issueDate).toLocaleDateString("en-GB") : new Date().toLocaleDateString("en-GB")}
                   </Typography>
-                  <Typography variant="subtitle1" fontWeight={800} color={tokens.colors.secondary[900]}>
-                    #{selectedInvoice.invoiceNumber}
-                  </Typography>
-                  <Box sx={{ mt: 1 }}>
-                    <Chip
-                      label={selectedInvoice.status}
-                      color={
-                        selectedInvoice.status === "PAID"
-                          ? "success"
-                          : selectedInvoice.status === "PARTIALLY_PAID"
-                          ? "info"
-                          : "warning"
-                      }
-                      sx={{ fontWeight: 800, textTransform: "uppercase" }}
-                    />
-                  </Box>
                 </Box>
               </Box>
 
-              <Divider />
+              {/* Invoice Title */}
+              <Box sx={{ textAlign: "center", my: 1 }}>
+                <Typography variant="h4" fontWeight={900} letterSpacing="0.05em" sx={{ color: "#0f172a" }}>
+                  INVOICE #{selectedInvoice.invoiceNumber || "0154"}
+                </Typography>
+              </Box>
 
-              {/* Billed To & Dates Grid */}
-              <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 3 }}>
-                <Box sx={{ p: 2, bgcolor: "#f8fafc", borderRadius: `${tokens.borderRadius.md}px` }}>
-                  <Typography variant="caption" color="text.secondary" fontWeight={700} textTransform="uppercase">
-                    BILLED TO:
+              {/* Bill to / Ship to Grid */}
+              <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 3, border: "1px solid #cbd5e1", borderRadius: 1.5, p: 2, bgcolor: "#f8fafc" }}>
+                <Box>
+                  <Typography variant="subtitle2" fontWeight={900} color="#0f172a" sx={{ borderBottom: "1px solid #cbd5e1", pb: 0.5, mb: 1 }}>
+                    Bill to:
                   </Typography>
-                  <Typography variant="subtitle1" fontWeight={800} color={tokens.colors.secondary[900]}>
-                    {selectedInvoice.customerCompanyName || selectedInvoice.customerName || "Valued Client"}
-                  </Typography>
-                  {selectedInvoice.customerName && selectedInvoice.customerCompanyName && (
-                    <Typography variant="body2" color="text.secondary">
-                      Attn: {selectedInvoice.customerName}
-                    </Typography>
-                  )}
-                  <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
-                    Project: <strong>{selectedInvoice.projectName || selectedInvoice.project?.projectName || "Custom Services"}</strong>
-                  </Typography>
+                  <Typography variant="body2"><strong>Client / Company:</strong> {selectedInvoice.customerCompanyName || selectedInvoice.customerName || "Webliix Client"}</Typography>
+                  <Typography variant="body2"><strong>Contact Person:</strong> {selectedInvoice.customerName || selectedInvoice.customerCompanyName || "Authorized Signatory"}</Typography>
+                  <Typography variant="body2"><strong>Client ID#:</strong> #{selectedInvoice.customerId || selectedInvoice.id}</Typography>
+                  <Typography variant="body2"><strong>Project:</strong> {selectedInvoice.projectName || selectedInvoice.project?.projectName || "Engineering Services"}</Typography>
                 </Box>
 
-                <Box sx={{ p: 2, bgcolor: "#f8fafc", borderRadius: `${tokens.borderRadius.md}px`, display: "flex", flexDirection: "column", gap: 0.5 }}>
-                  <Typography variant="caption" color="text.secondary" fontWeight={700} textTransform="uppercase">
-                    INVOICE PARTICULARS:
+                <Box>
+                  <Typography variant="subtitle2" fontWeight={900} color="#0f172a" sx={{ borderBottom: "1px solid #cbd5e1", pb: 0.5, mb: 1 }}>
+                    Ship to:
                   </Typography>
-                  <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                    <Typography variant="body2" color="text.secondary">Issue Date:</Typography>
-                    <Typography variant="body2" fontWeight={700}>
-                      {selectedInvoice.issueDate ? new Date(selectedInvoice.issueDate).toLocaleDateString() : "—"}
-                    </Typography>
-                  </Box>
-                  <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                    <Typography variant="body2" color="text.secondary">Due Date:</Typography>
-                    <Typography variant="body2" fontWeight={700} color={tokens.colors.warning[700]}>
-                      {selectedInvoice.dueDate ? new Date(selectedInvoice.dueDate).toLocaleDateString() : "Upon Receipt"}
-                    </Typography>
-                  </Box>
-                  <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                    <Typography variant="body2" color="text.secondary">Payment Status:</Typography>
-                    <Typography variant="body2" fontWeight={700} color={selectedInvoice.status === "PAID" ? tokens.colors.success[700] : tokens.colors.warning[700]}>
-                      {selectedInvoice.status}
-                    </Typography>
-                  </Box>
+                  <Typography variant="body2"><strong>Recipient:</strong> {selectedInvoice.customerCompanyName || selectedInvoice.customerName || "Webliix Client"}</Typography>
+                  <Typography variant="body2"><strong>Delivery:</strong> Digital Delivery / Remote Deployment</Typography>
+                  <Typography variant="body2"><strong>Status:</strong> {selectedInvoice.status || "DRAFT"}</Typography>
+                  <Typography variant="body2"><strong>Portal:</strong> login.webliix.com</Typography>
+                </Box>
+              </Box>
+
+              {/* Sub-grid: Payment Due, Salesperson, Terms, Status */}
+              <Box sx={{ display: "grid", gridTemplateColumns: { xs: "repeat(2, 1fr)", sm: "repeat(4, 1fr)" }, gap: 1.5, border: "1px solid #cbd5e1", borderRadius: 1, p: 1.5, bgcolor: "#f1f5f9", textAlign: "center" }}>
+                <Box>
+                  <Typography variant="caption" fontWeight={800} color="text.secondary">PAYMENT DUE</Typography>
+                  <Typography variant="body2" fontWeight={800}>{selectedInvoice.dueDate ? new Date(selectedInvoice.dueDate).toLocaleDateString("en-GB") : "Upon Receipt"}</Typography>
+                </Box>
+                <Box>
+                  <Typography variant="caption" fontWeight={800} color="text.secondary">SALESPERSON / LEAD</Typography>
+                  <Typography variant="body2" fontWeight={800}>Webliix Direct</Typography>
+                </Box>
+                <Box>
+                  <Typography variant="caption" fontWeight={800} color="text.secondary">PAYMENT TERMS</Typography>
+                  <Typography variant="body2" fontWeight={800}>Contractual Schedule</Typography>
+                </Box>
+                <Box>
+                  <Typography variant="caption" fontWeight={800} color="text.secondary">PAYMENT STATE</Typography>
+                  <Typography variant="body2" fontWeight={800} color={selectedInvoice.status === "PAID" ? "success.main" : "warning.main"}>
+                    Paid: ₹{(selectedInvoice.paidAmount || 0).toLocaleString()}/-
+                  </Typography>
                 </Box>
               </Box>
 
               {/* Itemized Table */}
-              <Box>
-                <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1 }}>
-                  Deliverables & Services Breakdown
-                </Typography>
-                <TableContainer sx={{ border: `1px solid ${tokens.colors.secondary[200]}`, borderRadius: `${tokens.borderRadius.md}px` }}>
-                  <Table size="small">
-                    <TableHead sx={{ bgcolor: tokens.colors.secondary[50] }}>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 700 }}>#</TableCell>
-                        <TableCell sx={{ fontWeight: 700 }}>Description / Deliverable</TableCell>
-                        <TableCell sx={{ fontWeight: 700, textAlign: "right" }}>Qty</TableCell>
-                        <TableCell sx={{ fontWeight: 700, textAlign: "right" }}>Rate (₹)</TableCell>
-                        <TableCell sx={{ fontWeight: 700, textAlign: "right" }}>Amount (₹)</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {selectedInvoice.items && selectedInvoice.items.length > 0 ? (
-                        selectedInvoice.items.map((item, idx) => (
-                          <TableRow key={idx}>
-                            <TableCell>{idx + 1}</TableCell>
-                            <TableCell>
-                              <Typography variant="body2" fontWeight={700}>{item.itemName}</Typography>
-                              {item.description && (
-                                <Typography variant="caption" color="text.secondary">{item.description}</Typography>
-                              )}
-                            </TableCell>
-                            <TableCell sx={{ textAlign: "right" }}>{item.quantity}</TableCell>
-                            <TableCell sx={{ textAlign: "right" }}>₹{(item.unitPrice || 0).toLocaleString()}</TableCell>
-                            <TableCell sx={{ textAlign: "right", fontWeight: 700 }}>
-                              ₹{(item.totalPrice || (item.quantity * item.unitPrice) || 0).toLocaleString()}
-                            </TableCell>
-                          </TableRow>
-                        ))
-                      ) : (
-                        <TableRow>
-                          <TableCell>1</TableCell>
+              <TableContainer sx={{ border: "1px solid #cbd5e1", borderRadius: 1 }}>
+                <Table size="small">
+                  <TableHead sx={{ bgcolor: "#0f172a" }}>
+                    <TableRow>
+                      <TableCell sx={{ color: "#ffffff", fontWeight: 800 }}>Qty.</TableCell>
+                      <TableCell sx={{ color: "#ffffff", fontWeight: 800 }}>Item#</TableCell>
+                      <TableCell sx={{ color: "#ffffff", fontWeight: 800 }}>Description</TableCell>
+                      <TableCell sx={{ color: "#ffffff", fontWeight: 800, textAlign: "right" }}>Unit price</TableCell>
+                      <TableCell sx={{ color: "#ffffff", fontWeight: 800, textAlign: "right" }}>Discount</TableCell>
+                      <TableCell sx={{ color: "#ffffff", fontWeight: 800, textAlign: "right" }}>Line total</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {selectedInvoice.items && selectedInvoice.items.length > 0 ? (
+                      selectedInvoice.items.map((item, idx) => (
+                        <TableRow key={idx} sx={{ "&:nth-of-type(even)": { bgcolor: "#f8fafc" } }}>
+                          <TableCell sx={{ fontWeight: 600 }}>{item.quantity || 1}</TableCell>
+                          <TableCell sx={{ fontWeight: 600 }}>{idx + 1}</TableCell>
                           <TableCell>
-                            <Typography variant="body2" fontWeight={700}>
-                              {selectedInvoice.projectName || "Software Development & Professional Services"}
-                            </Typography>
-                            <Typography variant="caption" color="text.secondary">
-                              Contract deliverables & engineering hours
-                            </Typography>
+                            <Typography variant="body2" fontWeight={700}>{item.itemName}</Typography>
+                            {item.description && <Typography variant="caption" color="text.secondary">{item.description}</Typography>}
                           </TableCell>
-                          <TableCell sx={{ textAlign: "right" }}>1</TableCell>
-                          <TableCell sx={{ textAlign: "right" }}>₹{(selectedInvoice.totalAmount || 0).toLocaleString()}</TableCell>
-                          <TableCell sx={{ textAlign: "right", fontWeight: 700 }}>₹{(selectedInvoice.totalAmount || 0).toLocaleString()}</TableCell>
+                          <TableCell sx={{ textAlign: "right", fontWeight: 600 }}>₹{(item.unitPrice || 0).toLocaleString()}/-</TableCell>
+                          <TableCell sx={{ textAlign: "right", fontWeight: 600 }}>₹0/-</TableCell>
+                          <TableCell sx={{ textAlign: "right", fontWeight: 800 }}>₹{(item.totalPrice || (item.quantity * item.unitPrice) || 0).toLocaleString()}/-</TableCell>
                         </TableRow>
-                      )}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Box>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: 600 }}>1</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>01</TableCell>
+                        <TableCell>
+                          <Typography variant="body2" fontWeight={700}>
+                            {selectedInvoice.projectName || "Software Development & Architecture Services"}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            Delivery milestones, cloud deployment & engineering sprint
+                          </Typography>
+                        </TableCell>
+                        <TableCell sx={{ textAlign: "right", fontWeight: 600 }}>₹{(selectedInvoice.totalAmount || 0).toLocaleString()}/-</TableCell>
+                        <TableCell sx={{ textAlign: "right", fontWeight: 600 }}>₹{(selectedInvoice.discountAmount || 0).toLocaleString()}/-</TableCell>
+                        <TableCell sx={{ textAlign: "right", fontWeight: 800 }}>₹{(selectedInvoice.totalAmount || 0).toLocaleString()}/-</TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
 
-              {/* Financial Calculation Breakdown */}
+              {/* Financial Totals Block */}
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                <Box sx={{ width: { xs: "100%", sm: 340 }, p: 2, bgcolor: "#f8fafc", borderRadius: `${tokens.borderRadius.md}px`, display: "flex", flexDirection: "column", gap: 1 }}>
+                <Box sx={{ width: { xs: "100%", sm: 380 }, border: "1px solid #cbd5e1", borderRadius: 1.5, p: 2, bgcolor: "#f8fafc", display: "flex", flexDirection: "column", gap: 1 }}>
                   <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                    <Typography variant="body2" color="text.secondary">Subtotal:</Typography>
-                    <Typography variant="body2" fontWeight={600}>
-                      ₹{(selectedInvoice.subtotal || selectedInvoice.totalAmount || 0).toLocaleString()}
+                    <Typography variant="body2" color="text.secondary" fontWeight={600}>Total Discount:</Typography>
+                    <Typography variant="body2" fontWeight={700}>₹{(selectedInvoice.discountAmount || 0).toLocaleString()}/-</Typography>
+                  </Box>
+                  <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                    <Typography variant="body2" color="text.secondary" fontWeight={600}>Subtotal:</Typography>
+                    <Typography variant="body2" fontWeight={700}>₹{(selectedInvoice.subtotal || selectedInvoice.totalAmount || 0).toLocaleString()}/-</Typography>
+                  </Box>
+                  <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                    <Typography variant="body2" color="success.main" fontWeight={700}>Paid Amount:</Typography>
+                    <Typography variant="body2" fontWeight={800} color="success.main">₹{(selectedInvoice.paidAmount || 0).toLocaleString()}/-</Typography>
+                  </Box>
+                  
+                  {/* Status: Remaining Payment Pill Bar */}
+                  <Box sx={{ p: 1.25, bgcolor: (selectedInvoice.pendingAmount || 0) > 0 ? "#fef3c7" : "#dcfce7", borderRadius: 1, border: `1px solid ${(selectedInvoice.pendingAmount || 0) > 0 ? "#f59e0b" : "#16a34a"}`, textAlign: "center" }}>
+                    <Typography variant="subtitle2" fontWeight={900} color={(selectedInvoice.pendingAmount || 0) > 0 ? "#b45309" : "#15803d"}>
+                      Status: Remaining Payment of ₹{(selectedInvoice.pendingAmount ?? ((selectedInvoice.totalAmount || 0) - (selectedInvoice.paidAmount || 0))).toLocaleString()}/-
                     </Typography>
                   </Box>
-                  {Boolean(selectedInvoice.taxAmount) && (
-                    <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                      <Typography variant="body2" color="text.secondary">Taxes (GST/VAT):</Typography>
-                      <Typography variant="body2" fontWeight={600}>
-                        ₹{(selectedInvoice.taxAmount || 0).toLocaleString()}
-                      </Typography>
-                    </Box>
-                  )}
-                  {Boolean(selectedInvoice.discountAmount) && (
-                    <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                      <Typography variant="body2" color="text.secondary">Discount Applied:</Typography>
-                      <Typography variant="body2" fontWeight={600} color={tokens.colors.success[700]}>
-                        -₹{(selectedInvoice.discountAmount || 0).toLocaleString()}
-                      </Typography>
-                    </Box>
-                  )}
+
                   <Divider />
                   <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <Typography variant="subtitle1" fontWeight={800}>Total Billed:</Typography>
-                    <Typography variant="h6" fontWeight={800} color={tokens.colors.primary.main}>
-                      ₹{(selectedInvoice.totalAmount || 0).toLocaleString()}
-                    </Typography>
-                  </Box>
-                  <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                    <Typography variant="body2" color={tokens.colors.success[700]} fontWeight={700}>Amount Paid:</Typography>
-                    <Typography variant="body2" fontWeight={700} color={tokens.colors.success[700]}>
-                      ₹{(selectedInvoice.paidAmount || 0).toLocaleString()}
-                    </Typography>
-                  </Box>
-                  <Box sx={{ display: "flex", justifyContent: "space-between", p: 1, bgcolor: tokens.colors.warning[50], borderRadius: `${tokens.borderRadius.xs}px` }}>
-                    <Typography variant="subtitle2" color={tokens.colors.warning[700]} fontWeight={800}>Balance Due:</Typography>
-                    <Typography variant="subtitle2" fontWeight={800} color={tokens.colors.warning[700]}>
-                      ₹{(selectedInvoice.pendingAmount || 0).toLocaleString()}
+                    <Typography variant="h6" fontWeight={900}>Total:</Typography>
+                    <Typography variant="h5" fontWeight={900} color="primary.main">
+                      ₹{(selectedInvoice.totalAmount || 0).toLocaleString()}/-
                     </Typography>
                   </Box>
                 </Box>
               </Box>
 
-              {/* Notes & Bank Details */}
-              <Box sx={{ p: 2, bgcolor: "#f1f5f9", borderRadius: `${tokens.borderRadius.md}px` }}>
-                <Typography variant="caption" fontWeight={700} color="text.secondary">
-                  PAYMENT TERMS & INSTRUCTIONS
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                  {selectedInvoice.notes || "Payments should be remitted via bank wire transfer or net banking per contract schedule. For support or payment confirmation, please contact your account manager or reach us at contact@webliix.com."}
+              {/* Official Thank you & Authorized Signatory */}
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", pt: 2, borderTop: "1px dashed #cbd5e1" }}>
+                <Box>
+                  <Typography variant="h6" fontWeight={800} sx={{ fontStyle: "italic", color: "#0f172a" }}>
+                    Thank you for your business!
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
+                    For billing support or payment confirmation: contact@webliix.com | +91 93101 81569
+                  </Typography>
+                </Box>
+                <Box sx={{ textAlign: "center" }}>
+                  <Typography variant="body1" sx={{ fontFamily: "cursive", fontStyle: "italic", fontWeight: 700, color: "#1e293b", minHeight: 28 }}>
+                    Himanshu Sharma
+                  </Typography>
+                  <Box sx={{ width: 140, height: 1, bgcolor: "#334155", my: 0.5, mx: "auto" }} />
+                  <Typography variant="caption" fontWeight={700} color="#475569" sx={{ display: "block" }}>
+                    Authorized Signatory
+                  </Typography>
+                </Box>
+              </Box>
+
+              {/* Official Footer */}
+              <Box sx={{ textAlign: "center", pt: 1, borderTop: "2px solid #0f172a" }}>
+                <Typography variant="caption" fontWeight={700} color="#334155" sx={{ display: "block" }}>
+                  B-34, Galaxy Blue Sapphire Plaza, Greater Noida West Sector 4, Uttar Pradesh 201305 | contact@webliix.com | +91 93101 81569 | webliix.com
                 </Typography>
               </Box>
             </Box>

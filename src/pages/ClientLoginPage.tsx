@@ -31,6 +31,7 @@ export default function ClientLoginPage() {
   const [resetEmail, setResetEmail] = useState("");
   const [otpCode, setOtpCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [resetToken, setResetToken] = useState("");
   const [resetStep, setResetStep] = useState<"EMAIL" | "OTP">("EMAIL");
   const [resetLoading, setResetLoading] = useState(false);
   const [resetMsg, setResetMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -54,34 +55,68 @@ export default function ClientLoginPage() {
     }
   };
 
-  const handleSendOtp = (e: FormEvent) => {
+  const handleSendOtp = async (e: FormEvent) => {
     e.preventDefault();
-    if (!resetEmail) return;
+    if (!resetEmail.trim()) return;
     setResetLoading(true);
     setResetMsg(null);
-    setTimeout(() => {
-      setResetLoading(false);
+    try {
+      const res = await authService.forgotPassword(resetEmail.trim());
       setResetStep("OTP");
-      setResetMsg({ type: "success", text: "Verification code sent to your email address." });
-    }, 1000);
+      setResetMsg({
+        type: "success",
+        text: res.message || "A 6-digit OTP verification code has been dispatched to your email address.",
+      });
+    } catch (err: any) {
+      setResetMsg({
+        type: "error",
+        text: err.response?.data?.message || err.message || "Failed to dispatch verification code. Please check the email entered.",
+      });
+    } finally {
+      setResetLoading(false);
+    }
   };
 
-  const handleVerifyOtpAndReset = (e: FormEvent) => {
+  const handleVerifyOtpAndReset = async (e: FormEvent) => {
     e.preventDefault();
-    if (!otpCode || !newPassword) return;
+    if (!otpCode.trim() || !newPassword) return;
+    if (newPassword.length < 6) {
+      setResetMsg({ type: "error", text: "New password must be at least 6 characters long." });
+      return;
+    }
     setResetLoading(true);
     setResetMsg(null);
-    setTimeout(() => {
-      setResetLoading(false);
-      setResetMsg({ type: "success", text: "Password reset successful! You can now log in." });
+    try {
+      // Step 1: Verify OTP and acquire cryptographically signed single-use resetToken
+      let currentToken = resetToken;
+      if (!currentToken) {
+        const verifyRes = await authService.verifyResetOtp(resetEmail.trim(), otpCode.trim());
+        currentToken = verifyRes.resetToken;
+        setResetToken(currentToken);
+      }
+
+      // Step 2: Set the new password with the validated token
+      const resetRes = await authService.resetPassword(resetEmail.trim(), currentToken, newPassword);
+      setResetMsg({
+        type: "success",
+        text: resetRes.message || "Password updated successfully! You can now log in.",
+      });
       setTimeout(() => {
         setForgotModalOpen(false);
         setResetStep("EMAIL");
         setResetMsg(null);
         setOtpCode("");
         setNewPassword("");
+        setResetToken("");
       }, 1500);
-    }, 1200);
+    } catch (err: any) {
+      setResetMsg({
+        type: "error",
+        text: err.response?.data?.message || err.message || "Invalid or expired OTP code. Please check and try again.",
+      });
+    } finally {
+      setResetLoading(false);
+    }
   };
 
   return (

@@ -68,14 +68,23 @@ export default function ClientTicketsPage() {
             Need technical support or assistance? Raise a ticket directly with Webliix engineers.
           </Typography>
         </Box>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => setOpenModal(true)}
-          sx={{ borderRadius: tokens.borderRadius.md, fontWeight: 700 }}
-        >
-          New Support Ticket
-        </Button>
+        <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap" }}>
+          <Button
+            variant="outlined"
+            onClick={() => window.location.href = "/chat"}
+            sx={{ borderRadius: tokens.borderRadius.md, fontWeight: 700 }}
+          >
+            Open Project Live Chat
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => setOpenModal(true)}
+            sx={{ borderRadius: tokens.borderRadius.md, fontWeight: 700 }}
+          >
+            New Support Ticket
+          </Button>
+        </Box>
       </Box>
 
       {loading ? (

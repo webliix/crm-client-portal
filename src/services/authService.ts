@@ -77,6 +77,32 @@ export const authService = {
     }
   },
 
+  async forgotPassword(email: string): Promise<{ success: boolean; message: string }> {
+    const res = await http.post("/api/v1/auth/forgot-password", { email });
+    return {
+      success: res.data?.success ?? true,
+      message: res.data?.message || res.data?.data || "Verification code sent to your email address.",
+    };
+  },
+
+  async verifyResetOtp(email: string, otp: string): Promise<{ success: boolean; resetToken: string; message: string }> {
+    const res = await http.post("/api/v1/auth/verify-reset-otp", { email, otp });
+    const data = res.data?.data || res.data;
+    return {
+      success: true,
+      resetToken: data.resetToken,
+      message: res.data?.message || data.message || "OTP verified successfully.",
+    };
+  },
+
+  async resetPassword(email: string, resetToken: string, newPassword: string): Promise<{ success: boolean; message: string }> {
+    const res = await http.post("/api/v1/auth/reset-password", { email, resetToken, newPassword });
+    return {
+      success: res.data?.success ?? true,
+      message: res.data?.message || "Password reset successfully! You can now log in.",
+    };
+  },
+
   getCurrentUser(): ClientUser | null {
     const stored = localStorage.getItem("client_user");
     if (!stored) return null;
