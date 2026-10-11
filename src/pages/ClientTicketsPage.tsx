@@ -37,23 +37,12 @@ export default function ClientTicketsPage() {
     const created = await ticketApi.createTicket(subject.trim(), description.trim());
     if (created) {
       setTickets((prev) => [created, ...prev]);
+      setSubject("");
+      setDescription("");
+      setOpenModal(false);
     } else {
-      setTickets((prev) => [
-        {
-          id: Date.now(),
-          ticketNumber: `TCK-${Math.floor(Math.random() * 9000) + 1000}`,
-          subject: subject.trim(),
-          description: description.trim(),
-          status: "OPEN",
-          priority: "MEDIUM",
-          createdAt: new Date().toISOString(),
-        },
-        ...prev,
-      ]);
+      alert("Failed to submit support ticket. Please try again.");
     }
-    setSubject("");
-    setDescription("");
-    setOpenModal(false);
     setCreating(false);
   };
 
