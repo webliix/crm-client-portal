@@ -1,4 +1,5 @@
 import { http } from "./http";
+import { authService } from "./authService";
 
 export interface ClientTicket {
   id: number;
@@ -43,8 +44,27 @@ export const ticketApi = {
         category: "SUPPORT",
       });
       return res.data?.data ?? null;
-    } catch {
-      return null;
+    } catch (primaryErr: any) {
+      console.warn("Authenticated ticket creation failed, checking fallback:", primaryErr);
+      const currentUser = authService.getCurrentUser();
+      if (currentUser?.email) {
+        try {
+          const pubRes = await http.post("/api/v1/public/tickets", {
+            name: currentUser.name || "Client",
+            email: currentUser.email,
+            phone: currentUser.phone || "",
+            title,
+            description,
+            category: "SUPPORT",
+          });
+          return pubRes.data?.data ?? null;
+        } catch (fallbackErr: any) {
+          const msg = fallbackErr?.response?.data?.message || fallbackErr?.message || "Failed to create support ticket";
+          throw new Error(msg);
+        }
+      }
+      const errMsg = primaryErr?.response?.data?.message || primaryErr?.message || "Failed to create support ticket";
+      throw new Error(errMsg);
     }
   },
 

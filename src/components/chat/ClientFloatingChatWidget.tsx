@@ -163,7 +163,7 @@ export function ClientFloatingChatWidget() {
         setInquiryError("Failed to initiate live support session. Please try again.");
       }
     } catch (err: any) {
-      setInquiryError(err?.response?.data?.message || "Failed to initiate support session.");
+      setInquiryError(err?.response?.data?.message || err?.message || "Failed to initiate live support session. Please try again.");
     } finally {
       setSubmittingInquiry(false);
     }
