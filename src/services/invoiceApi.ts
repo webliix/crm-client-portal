@@ -25,6 +25,9 @@ export interface ClientInvoice {
   paidAmount: number;
   pendingAmount: number;
   status: string;
+  transactionReference?: string;
+  paymentMethod?: string;
+  paidDate?: string;
   issueDate?: string;
   dueDate?: string;
   currency?: string;

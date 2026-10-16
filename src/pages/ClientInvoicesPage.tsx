@@ -453,12 +453,26 @@ export default function ClientInvoicesPage() {
                     <Typography variant="body2" fontWeight={800} color="success.main">₹{(selectedInvoice.paidAmount || 0).toLocaleString()}/-</Typography>
                   </Box>
                   
-                  {/* Status: Remaining Payment Pill Bar */}
-                  <Box sx={{ p: 1.25, bgcolor: (selectedInvoice.pendingAmount || 0) > 0 ? "#fef3c7" : "#dcfce7", borderRadius: 1, border: `1px solid ${(selectedInvoice.pendingAmount || 0) > 0 ? "#f59e0b" : "#16a34a"}`, textAlign: "center" }}>
-                    <Typography variant="subtitle2" fontWeight={900} color={(selectedInvoice.pendingAmount || 0) > 0 ? "#b45309" : "#15803d"}>
-                      Status: Remaining Payment of ₹{(selectedInvoice.pendingAmount ?? ((selectedInvoice.totalAmount || 0) - (selectedInvoice.paidAmount || 0))).toLocaleString()}/-
-                    </Typography>
-                  </Box>
+                  {/* Status: Remaining Payment Pill Bar or Paid Settlement Block */}
+                  {selectedInvoice.status === "PAID" || (selectedInvoice.pendingAmount !== undefined && selectedInvoice.pendingAmount <= 0) ? (
+                    <Box sx={{ p: 1.5, bgcolor: "#dcfce7", borderRadius: 1.5, border: "1px solid #16a34a", textAlign: "left" }}>
+                      <Typography variant="subtitle2" fontWeight={900} color="#15803d" sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 0.5 }}>
+                        ✓ Paid & Settled in Full
+                      </Typography>
+                      <Typography variant="caption" sx={{ display: "block", color: "#166534", fontWeight: 700 }}>
+                        Txn Ref: {selectedInvoice.transactionReference || `TXN-${selectedInvoice.invoiceNumber || selectedInvoice.id}`}
+                      </Typography>
+                      <Typography variant="caption" sx={{ display: "block", color: "#166534" }}>
+                        Method: {selectedInvoice.paymentMethod || "Bank Transfer"} {selectedInvoice.paidDate ? `• ${new Date(selectedInvoice.paidDate).toLocaleDateString("en-GB")}` : ""}
+                      </Typography>
+                    </Box>
+                  ) : (
+                    <Box sx={{ p: 1.25, bgcolor: "#fef3c7", borderRadius: 1, border: "1px solid #f59e0b", textAlign: "center" }}>
+                      <Typography variant="subtitle2" fontWeight={900} color="#b45309">
+                        Status: Remaining Payment of ₹{(selectedInvoice.pendingAmount ?? Math.max(0, (selectedInvoice.totalAmount || 0) - (selectedInvoice.paidAmount || 0))).toLocaleString()}/-
+                      </Typography>
+                    </Box>
+                  )}
 
                   <Divider />
                   <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
