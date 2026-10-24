@@ -16,6 +16,10 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import KeyOutlinedIcon from "@mui/icons-material/KeyOutlined";
 import InputAdornment from "@mui/material/InputAdornment";
+import Chip from "@mui/material/Chip";
+import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
+import CheckCircle2Icon from "@mui/icons-material/CheckCircleOutline";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { tokens } from "../theme/tokens";
 import { authService } from "../services/authService";
 
@@ -39,7 +43,7 @@ export default function ClientLoginPage() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
-      setError("Please fill in both email and password.");
+      setError("Please enter both your client email and password.");
       return;
     }
     setError(null);
@@ -49,7 +53,7 @@ export default function ClientLoginPage() {
       await authService.login(email.trim(), password);
       navigate("/dashboard");
     } catch {
-      setError("Invalid login credentials. Please verify your email and password.");
+      setError("Invalid credentials. Please verify your client email and password.");
     } finally {
       setLoading(false);
     }
@@ -87,7 +91,6 @@ export default function ClientLoginPage() {
     setResetLoading(true);
     setResetMsg(null);
     try {
-      // Step 1: Verify OTP and acquire cryptographically signed single-use resetToken
       let currentToken = resetToken;
       if (!currentToken) {
         const verifyRes = await authService.verifyResetOtp(resetEmail.trim(), otpCode.trim());
@@ -95,7 +98,6 @@ export default function ClientLoginPage() {
         setResetToken(currentToken);
       }
 
-      // Step 2: Set the new password with the validated token
       const resetRes = await authService.resetPassword(resetEmail.trim(), currentToken, newPassword);
       setResetMsg({
         type: "success",
@@ -127,50 +129,84 @@ export default function ClientLoginPage() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        bgcolor: "#0f172a",
-        p: 2.5,
+        bgcolor: "#090d16",
+        position: "relative",
+        overflow: "hidden",
+        p: { xs: 2.5, sm: 4 },
       }}
     >
+      {/* Ambient Cyber Halos */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: "-15%",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: { xs: "360px", sm: "700px" },
+          height: { xs: "360px", sm: "500px" },
+          background: "radial-gradient(circle, rgba(99, 102, 241, 0.22) 0%, rgba(139, 92, 246, 0.12) 45%, transparent 70%)",
+          filter: "blur(90px)",
+          borderRadius: "50%",
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* Main Login Card */}
       <Card
         sx={{
           width: "100%",
-          maxWidth: 440,
+          maxWidth: 460,
           borderRadius: tokens.borderRadius.xl,
-          boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+          boxShadow: "0 24px 60px -12px rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.15)",
           bgcolor: "#ffffff",
+          border: "1px solid rgba(226, 232, 240, 0.8)",
+          position: "relative",
+          zIndex: 10,
+          overflow: "hidden",
         }}
       >
-        <CardContent sx={{ p: { xs: 3.5, sm: 5 } }}>
-          {/* Header */}
-          <Box sx={{ textAlign: "center", mb: 4 }}>
+        {/* Top Accent Gradient Bar */}
+        <Box sx={{ height: 4, background: tokens.colors.primary.gradient }} />
+
+        <CardContent sx={{ p: { xs: 3.5, sm: 4.5 } }}>
+          {/* Logo & Headline */}
+          <Box sx={{ textAlign: "center", mb: 3.5 }}>
             <Box
               component="img"
               src="https://res.cloudinary.com/vhth8clt/image/upload/v1788210409/logo.png"
               alt="Webliix Logo"
               sx={{
-                height: 52,
-                maxHeight: 52,
+                height: 48,
+                maxHeight: 48,
                 objectFit: "contain",
                 mx: "auto",
                 mb: 2,
               }}
             />
-            <Typography variant="h4" fontWeight={800} color={tokens.colors.secondary[900]} gutterBottom>
-              Client Portal
+
+            <Box sx={{ display: "inline-flex", alignItems: "center", gap: 0.75, mb: 1, px: 2, py: 0.5, borderRadius: tokens.borderRadius.full, bgcolor: tokens.colors.primary[50], border: `1px solid ${tokens.colors.primary[200]}` }}>
+              <ShieldOutlinedIcon sx={{ fontSize: 14, color: tokens.colors.primary.main }} />
+              <Typography variant="caption" fontWeight={800} color={tokens.colors.primary[700]} sx={{ letterSpacing: "0.04em" }}>
+                SECURE CLIENT PORTAL
+              </Typography>
+            </Box>
+
+            <Typography variant="h5" fontWeight={800} color={tokens.colors.secondary[900]} gutterBottom>
+              Client Sign-In
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Access your project progress, deliverables & billing
+            <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.875rem" }}>
+              Access milestones, live engineering chat, and billing
             </Typography>
           </Box>
 
           {error && (
-            <Alert severity="error" sx={{ mb: 3, borderRadius: tokens.borderRadius.md }}>
+            <Alert severity="error" sx={{ mb: 3, borderRadius: tokens.borderRadius.md, fontSize: "0.84rem" }}>
               {error}
             </Alert>
           )}
 
           <form onSubmit={handleSubmit}>
-            <Box sx={{ display: "grid", gap: 2.5 }}>
+            <Box sx={{ display: "grid", gap: 2.25 }}>
               <Box>
                 <Typography variant="caption" fontWeight={700} color={tokens.colors.secondary[700]} sx={{ mb: 0.75, display: "block" }}>
                   Client Email Address
@@ -184,9 +220,18 @@ export default function ClientLoginPage() {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <EmailOutlinedIcon sx={{ fontSize: 20, color: tokens.colors.secondary[400] }} />
+                        <EmailOutlinedIcon sx={{ fontSize: 19, color: tokens.colors.secondary[400] }} />
                       </InputAdornment>
                     ),
+                  }}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: tokens.borderRadius.md,
+                      "&.Mui-focused fieldset": {
+                        borderColor: tokens.colors.primary.main,
+                        boxShadow: `0 0 0 3px ${tokens.colors.primary[100]}`,
+                      },
+                    },
                   }}
                 />
               </Box>
@@ -213,9 +258,18 @@ export default function ClientLoginPage() {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <LockOutlinedIcon sx={{ fontSize: 20, color: tokens.colors.secondary[400] }} />
+                        <LockOutlinedIcon sx={{ fontSize: 19, color: tokens.colors.secondary[400] }} />
                       </InputAdornment>
                     ),
+                  }}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: tokens.borderRadius.md,
+                      "&.Mui-focused fieldset": {
+                        borderColor: tokens.colors.primary.main,
+                        boxShadow: `0 0 0 3px ${tokens.colors.primary[100]}`,
+                      },
+                    },
                   }}
                 />
               </Box>
@@ -225,140 +279,187 @@ export default function ClientLoginPage() {
                 variant="contained"
                 size="large"
                 disabled={loading}
+                endIcon={!loading && <ArrowForwardIcon sx={{ fontSize: 18 }} />}
                 sx={{
-                  mt: 1,
-                  py: 1.5,
+                  mt: 0.75,
+                  py: 1.4,
                   borderRadius: tokens.borderRadius.md,
                   fontWeight: 800,
                   fontSize: "0.9375rem",
-                  bgcolor: tokens.colors.primary.main,
-                  boxShadow: `0 4px 14px ${tokens.colors.primary[300]}`,
+                  textTransform: "none",
+                  background: tokens.colors.primary.gradient,
+                  boxShadow: "0 6px 20px rgba(99, 102, 241, 0.4)",
+                  "&:hover": {
+                    background: "linear-gradient(135deg, #4f46e5 0%, #4338ca 100%)",
+                    boxShadow: "0 8px 24px rgba(99, 102, 241, 0.5)",
+                  },
                 }}
               >
-                {loading ? <CircularProgress size={24} sx={{ color: "#ffffff" }} /> : "Log In"}
+                {loading ? <CircularProgress size={24} sx={{ color: "#ffffff" }} /> : "Access Client Workspace"}
               </Button>
             </Box>
           </form>
+
+          {/* Value Props Row */}
+          <Box sx={{ mt: 3.5, pt: 3, borderTop: "1px solid #f1f5f9", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, textAlign: "center" }}>
+            <Box>
+              <Typography variant="caption" fontWeight={800} color="#0f172a" sx={{ fontSize: "0.75rem", display: "block" }}>
+                24/7 Access
+              </Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ fontSize: "0.6875rem" }}>
+                Live Tracking
+              </Typography>
+            </Box>
+            <Box>
+              <Typography variant="caption" fontWeight={800} color="#0f172a" sx={{ fontSize: "0.75rem", display: "block" }}>
+                Direct Chat
+              </Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ fontSize: "0.6875rem" }}>
+                Engineering Team
+              </Typography>
+            </Box>
+            <Box>
+              <Typography variant="caption" fontWeight={800} color="#0f172a" sx={{ fontSize: "0.75rem", display: "block" }}>
+                100% Verified
+              </Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ fontSize: "0.6875rem" }}>
+                Invoices & Files
+              </Typography>
+            </Box>
+          </Box>
         </CardContent>
       </Card>
 
-      {/* Footer Policy Links */}
-      <Box sx={{ mt: 3, display: "flex", gap: 3, flexWrap: "wrap", justifyContent: "center" }}>
-        <Typography
-          component="a"
-          href="https://webliix.com/terms"
-          target="_blank"
-          rel="noreferrer"
-          variant="caption"
-          color="#94a3b8"
-          sx={{ textDecoration: "none", "&:hover": { color: "#ffffff", textDecoration: "underline" } }}
-        >
-          Terms of Service
-        </Typography>
-        <Typography
-          component="a"
-          href="https://webliix.com/privacy"
-          target="_blank"
-          rel="noreferrer"
-          variant="caption"
-          color="#94a3b8"
-          sx={{ textDecoration: "none", "&:hover": { color: "#ffffff", textDecoration: "underline" } }}
-        >
-          Privacy Policy
-        </Typography>
-        <Typography
-          component="a"
-          href="https://webliix.com/refund"
-          target="_blank"
-          rel="noreferrer"
-          variant="caption"
-          color="#94a3b8"
-          sx={{ textDecoration: "none", "&:hover": { color: "#ffffff", textDecoration: "underline" } }}
-        >
-          Refund Policy
+      {/* Footer Support & Links */}
+      <Box sx={{ mt: 3, textAlign: "center", position: "relative", zIndex: 10 }}>
+        <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap", justifyContent: "center", mb: 1 }}>
+          <Typography
+            component="a"
+            href="https://webliix.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="caption"
+            sx={{ color: "#94a3b8", textDecoration: "none", fontWeight: 600, "&:hover": { color: "#ffffff" } }}
+          >
+            ← Back to Webliix.com
+          </Typography>
+          <Typography
+            component="a"
+            href="https://webliix.com/terms"
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="caption"
+            sx={{ color: "#94a3b8", textDecoration: "none", fontWeight: 600, "&:hover": { color: "#ffffff" } }}
+          >
+            Terms of Service
+          </Typography>
+          <Typography
+            component="a"
+            href="https://webliix.com/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="caption"
+            sx={{ color: "#94a3b8", textDecoration: "none", fontWeight: 600, "&:hover": { color: "#ffffff" } }}
+          >
+            Privacy Policy
+          </Typography>
+        </Box>
+        <Typography variant="caption" sx={{ color: "#64748b", fontSize: "0.6875rem", fontFamily: "monospace" }}>
+          Official Webliix Client Portal • login.webliix.com
         </Typography>
       </Box>
 
-      {/* Forgot Password Dialog Modal */}
-      <Dialog open={forgotModalOpen} onClose={() => setForgotModalOpen(false)} maxWidth="xs" fullWidth>
-        <DialogTitle sx={{ fontWeight: 800 }}>Reset Client Account Password</DialogTitle>
+      {/* Forgot Password OTP Modal */}
+      <Dialog
+        open={forgotModalOpen}
+        onClose={() => setForgotModalOpen(false)}
+        maxWidth="xs"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: tokens.borderRadius.lg,
+            p: 1,
+            boxShadow: tokens.shadows.xl,
+          },
+        }}
+      >
+        <DialogTitle sx={{ fontWeight: 800, pb: 1 }}>
+          {resetStep === "EMAIL" ? "Reset Password" : "Enter Verification OTP"}
+        </DialogTitle>
         <DialogContent>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            {resetStep === "EMAIL"
+              ? "Enter your client account email address to receive a 6-digit verification code."
+              : `A 6-digit OTP code was sent to ${resetEmail}. Enter the code and choose a new password.`}
+          </Typography>
+
           {resetMsg && (
-            <Alert severity={resetMsg.type} sx={{ mb: 2, mt: 1 }}>
+            <Alert severity={resetMsg.type} sx={{ mb: 2, borderRadius: tokens.borderRadius.md }}>
               {resetMsg.text}
             </Alert>
           )}
 
           {resetStep === "EMAIL" ? (
-            <form onSubmit={handleSendOtp} id="otp-email-form">
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                Enter your registered client email address to receive a password reset OTP code.
-              </Typography>
+            <Box component="form" onSubmit={handleSendOtp} sx={{ display: "grid", gap: 2 }}>
               <TextField
                 autoFocus
                 fullWidth
-                label="Registered Email"
                 type="email"
-                required
+                label="Client Email"
                 value={resetEmail}
                 onChange={(e) => setResetEmail(e.target.value)}
+                placeholder="client@yourcompany.com"
+                required
               />
-            </form>
+              <DialogActions sx={{ px: 0, pb: 0 }}>
+                <Button onClick={() => setForgotModalOpen(false)} sx={{ fontWeight: 600 }}>
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  disabled={resetLoading || !resetEmail.trim()}
+                  sx={{ fontWeight: 700, borderRadius: tokens.borderRadius.md }}
+                >
+                  {resetLoading ? <CircularProgress size={20} color="inherit" /> : "Send OTP"}
+                </Button>
+              </DialogActions>
+            </Box>
           ) : (
-            <form onSubmit={handleVerifyOtpAndReset} id="otp-verify-form">
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                Enter the OTP verification code sent to <strong>{resetEmail}</strong> and your new password.
-              </Typography>
-              <Box sx={{ display: "grid", gap: 2 }}>
-                <TextField
-                  fullWidth
-                  label="OTP Code"
-                  placeholder="6-digit code"
-                  required
-                  value={otpCode}
-                  onChange={(e) => setOtpCode(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <KeyOutlinedIcon sx={{ fontSize: 20 }} />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-                <TextField
-                  fullWidth
-                  label="New Password"
-                  type="password"
-                  required
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                />
-              </Box>
-            </form>
+            <Box component="form" onSubmit={handleVerifyOtpAndReset} sx={{ display: "grid", gap: 2 }}>
+              <TextField
+                autoFocus
+                fullWidth
+                label="6-Digit Verification Code"
+                value={otpCode}
+                onChange={(e) => setOtpCode(e.target.value)}
+                placeholder="123456"
+                required
+              />
+              <TextField
+                fullWidth
+                type="password"
+                label="New Password (min. 6 chars)"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+              />
+              <DialogActions sx={{ px: 0, pb: 0 }}>
+                <Button onClick={() => setResetStep("EMAIL")} sx={{ fontWeight: 600 }}>
+                  Back
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  disabled={resetLoading || !otpCode.trim() || !newPassword}
+                  sx={{ fontWeight: 700, borderRadius: tokens.borderRadius.md }}
+                >
+                  {resetLoading ? <CircularProgress size={20} color="inherit" /> : "Update Password"}
+                </Button>
+              </DialogActions>
+            </Box>
           )}
         </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2.5 }}>
-          <Button onClick={() => setForgotModalOpen(false)}>Cancel</Button>
-          {resetStep === "EMAIL" ? (
-            <Button
-              type="submit"
-              form="otp-email-form"
-              variant="contained"
-              disabled={resetLoading || !resetEmail}
-            >
-              {resetLoading ? "Sending OTP..." : "Send Verification OTP"}
-            </Button>
-          ) : (
-            <Button
-              type="submit"
-              form="otp-verify-form"
-              variant="contained"
-              disabled={resetLoading || !otpCode || !newPassword}
-            >
-              {resetLoading ? "Resetting..." : "Set New Password"}
-            </Button>
-          )}
-        </DialogActions>
       </Dialog>
     </Box>
   );

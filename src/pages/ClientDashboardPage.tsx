@@ -56,14 +56,14 @@ export default function ClientDashboardPage() {
 
   return (
     <Box sx={{ p: { xs: 2.5, md: 4 } }}>
-      {/* Premium Branded Welcome Banner */}
+      {/* Premium Branded Welcome Banner with Modern Ambient Mesh */}
       <Card
         sx={{
           borderRadius: tokens.borderRadius.xl,
-          border: `1px solid ${tokens.colors.primary[200]}`,
+          border: "1px solid rgba(99, 102, 241, 0.25)",
           mb: 4,
-          background: `linear-gradient(135deg, ${tokens.colors.primary[50]} 0%, #ffffff 50%, ${tokens.colors.primary[100]} 100%)`,
-          boxShadow: tokens.shadows.md,
+          background: "linear-gradient(135deg, rgba(238, 242, 255, 0.95) 0%, #ffffff 50%, rgba(224, 231, 255, 0.9) 100%)",
+          boxShadow: "0 10px 30px -5px rgba(99, 102, 241, 0.12), 0 4px 10px -2px rgba(15, 23, 42, 0.04)",
           position: "relative",
           overflow: "hidden",
         }}
