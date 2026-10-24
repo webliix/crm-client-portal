@@ -248,10 +248,22 @@ export function ClientLayout({ children }: Props) {
       </Drawer>
 
       {/* Desktop Sidebar */}
-      <Box sx={{ display: { xs: "none", md: "block" } }}>{sidebarContent}</Box>
+      <Box
+        sx={{
+          display: { xs: "none", md: "block" },
+          position: "fixed",
+          top: 0,
+          left: 0,
+          bottom: 0,
+          width: 270,
+          zIndex: 40,
+        }}
+      >
+        {sidebarContent}
+      </Box>
 
       {/* Main Content Area */}
-      <Box sx={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+      <Box sx={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, ml: { xs: 0, md: "270px" } }}>
         {/* Header Bar */}
         <Box
           sx={{
@@ -264,8 +276,10 @@ export function ClientLayout({ children }: Props) {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            position: "sticky",
+            position: "fixed",
             top: 0,
+            right: 0,
+            left: { xs: 0, md: "270px" },
             zIndex: 30,
           }}
         >
@@ -373,7 +387,7 @@ export function ClientLayout({ children }: Props) {
         </Box>
 
         {/* Content Body */}
-        <Box component="main" sx={{ flex: 1 }}>
+        <Box component="main" sx={{ flex: 1, mt: "64px" }}>
           {children}
         </Box>
 
