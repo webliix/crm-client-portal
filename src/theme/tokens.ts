@@ -88,11 +88,11 @@ export const tokens = {
   },
   borderRadius: {
     xs: 2,
-    sm: 4,
-    md: 6,
-    lg: 8,
-    xl: 10,
-    full: 6, // Square aesthetic with crisp modern corners
+    sm: 3,
+    md: 3,
+    lg: 3,
+    xl: 3,
+    full: 3, // Edgy with 3px modern corners
   },
   shadows: {
     card: "0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05)",

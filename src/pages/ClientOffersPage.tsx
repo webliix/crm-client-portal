@@ -61,7 +61,7 @@ const FALLBACK_OFFERS: OfferDisplayItem[] = [
     badge: "Cost Saver",
     badgeColor: "success",
     title: "Cloud Infrastructure & DevOps Optimization",
-    discount: "$1,200 Credit",
+    discount: "₹10,000 Credit",
     code: "CLOUD-OPTIM-30",
     description: "Audit your AWS, GCP, or Azure infrastructure for cost leaks, enhance CI/CD delivery pipelines, and configure auto-scaling.",
     features: [

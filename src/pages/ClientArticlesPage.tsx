@@ -34,44 +34,13 @@ export default function ClientArticlesPage() {
     articleApi
       .getPublishedArticles()
       .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
           setArticles(data);
         } else {
-          // Curated articles linked to public webliix blog
-          setArticles([
-            {
-              id: 1,
-              title: "Product Guidelines: Webliix Enterprise Engineering Standard",
-              slug: "product-guidelines-enterprise-standard",
-              excerpt: "Explore the comprehensive design system, security protocols, and CI/CD pipelines applied to all client software builds.",
-              category: "Guidelines",
-              readTimeMinutes: 5,
-              createdAt: new Date().toISOString(),
-              coverImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&auto=format&fit=crop&q=60",
-            },
-            {
-              id: 2,
-              title: "Cloud Infrastructure & High Availability Scaling in 2026",
-              slug: "cloud-infrastructure-2026",
-              excerpt: "How our dedicated multi-region deployments ensure 99.99% uptime for business applications.",
-              category: "Cloud Architecture",
-              readTimeMinutes: 7,
-              createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-              coverImage: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=60",
-            },
-            {
-              id: 3,
-              title: "SEO & Digital Performance Playbook for Modern Brands",
-              slug: "seo-digital-performance-playbook",
-              excerpt: "Key strategies for technical SEO, schema markup, and programmatic content scaling that drives organic traffic.",
-              category: "Growth & SEO",
-              readTimeMinutes: 4,
-              createdAt: new Date(Date.now() - 86400000 * 5).toISOString(),
-              coverImage: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=60",
-            },
-          ]);
+          setArticles([]);
         }
       })
+      .catch(() => setArticles([]))
       .finally(() => setLoading(false));
   }, []);
 
@@ -172,28 +141,50 @@ export default function ClientArticlesPage() {
       </Card>
 
       {/* Articles Grid - Square Cards linking to external site */}
-      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "repeat(3, 1fr)" }, gap: 3 }}>
-        {articles.map((item) => (
-          <Card
-            key={item.id}
-            onClick={() => handleOpenExternal(item.slug)}
-            sx={{
-              borderRadius: "8px",
-              border: "1px solid #e2e8f0",
-              bgcolor: "#ffffff",
-              cursor: "pointer",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-              transition: "transform 0.2s ease, border-color 0.2s ease",
-              "&:hover": {
-                transform: "translateY(-3px)",
-                borderColor: "#0f172a",
-                boxShadow: "0 8px 20px -4px rgba(0,0,0,0.08)",
-              },
-            }}
+      {articles.length === 0 ? (
+        <Card sx={{ p: 5, textAlign: "center", borderRadius: "3px", border: "1px solid #e2e8f0", bgcolor: "#ffffff" }}>
+          <ArticleOutlinedIcon sx={{ fontSize: 48, color: "#94a3b8", mb: 1.5 }} />
+          <Typography variant="h6" fontWeight={800} color="#0f172a" gutterBottom>
+            Official Articles Published on Webliix Blog
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 460, mx: "auto", mb: 2.5 }}>
+            Access all technical whitepapers, system guidelines, and cloud engineering articles on our public platform.
+          </Typography>
+          <Button
+            variant="contained"
+            component="a"
+            href="https://webliix.in/blog"
+            target="_blank"
+            rel="noopener noreferrer"
+            endIcon={<OpenInNewIcon fontSize="small" />}
+            sx={{ bgcolor: "#0f172a", borderRadius: "3px", textTransform: "none", fontWeight: 800 }}
           >
+            Open Webliix Blog
+          </Button>
+        </Card>
+      ) : (
+        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "repeat(3, 1fr)" }, gap: 3 }}>
+          {articles.map((item) => (
+            <Card
+              key={item.id}
+              onClick={() => handleOpenExternal(item.slug)}
+              sx={{
+                borderRadius: "3px",
+                border: "1px solid #e2e8f0",
+                bgcolor: "#ffffff",
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+                transition: "transform 0.2s ease, border-color 0.2s ease",
+                "&:hover": {
+                  transform: "translateY(-3px)",
+                  borderColor: "#0f172a",
+                  boxShadow: "0 8px 20px -4px rgba(0,0,0,0.08)",
+                },
+              }}
+            >
             {item.coverImage && (
               <CardMedia
                 component="img"
@@ -253,7 +244,8 @@ export default function ClientArticlesPage() {
             </CardContent>
           </Card>
         ))}
-      </Box>
+        </Box>
+      )}
 
       {/* Newsletter Subscription Box with Crisp Square Controls */}
       <Card
