@@ -119,7 +119,7 @@ export default function ClientArticlesPage() {
           <Button
             variant="contained"
             component="a"
-            href="https://webliix.in/blog"
+            href="https://webliix.com/blog"
             target="_blank"
             rel="noopener noreferrer"
             endIcon={<OpenInNewIcon fontSize="small" />}
@@ -153,7 +153,7 @@ export default function ClientArticlesPage() {
           <Button
             variant="contained"
             component="a"
-            href="https://webliix.in/blog"
+            href="https://webliix.com/blog"
             target="_blank"
             rel="noopener noreferrer"
             endIcon={<OpenInNewIcon fontSize="small" />}
@@ -237,7 +237,7 @@ export default function ClientArticlesPage() {
 
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pt: 1, borderTop: "1px solid #f1f5f9" }}>
                 <Typography variant="caption" fontWeight={800} color="#0f172a" sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                  Read on webliix.in <OpenInNewIcon sx={{ fontSize: 13 }} />
+                  Read on webliix.com <OpenInNewIcon sx={{ fontSize: 13 }} />
                 </Typography>
                 <ArrowForwardIcon sx={{ fontSize: 16, color: "#0f172a" }} />
               </Box>

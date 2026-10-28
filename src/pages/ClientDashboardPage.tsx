@@ -436,7 +436,7 @@ export default function ClientDashboardPage() {
 
           {/* Bottom Featured Banner: Opens External Blog Directly! */}
           <Card
-            onClick={() => window.open("https://webliix.in/blog", "_blank", "noopener,noreferrer")}
+            onClick={() => window.open("https://webliix.com/blog", "_blank", "noopener,noreferrer")}
             sx={{
               bgcolor: "#0f172a",
               color: "#ffffff",
@@ -480,7 +480,7 @@ export default function ClientDashboardPage() {
 
             <Box sx={{ position: "relative", zIndex: 2, display: "flex", alignItems: "center", gap: 0.75, mt: 3 }}>
               <Typography variant="caption" fontWeight={800} sx={{ color: "#f8fafc", fontSize: "0.82rem" }}>
-                Read on webliix.in
+                Read on webliix.com
               </Typography>
               <OpenInNewIcon sx={{ fontSize: 13, color: "#f8fafc" }} />
             </Box>

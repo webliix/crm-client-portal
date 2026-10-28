@@ -16,7 +16,7 @@ export interface ClientArticle {
 }
 
 export function getExternalArticleUrl(slug?: string): string {
-  const base = "https://webliix.in";
+  const base = "https://webliix.com";
   return slug ? `${base}/blog/${slug}` : `${base}/blog`;
 }
 
