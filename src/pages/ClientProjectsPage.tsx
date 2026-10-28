@@ -19,7 +19,7 @@ import AssignmentTurnedInOutlinedIcon from "@mui/icons-material/AssignmentTurned
 import { tokens } from "../theme/tokens";
 import { projectApi, type ClientProject } from "../services/projectApi";
 import { BrandLoader } from "../components/common/BrandLoader";
-import { ClientCardSkeleton } from "../components/common/ClientSkeleton";
+import { ClientCardSkeleton, ClientFadeWebliixLoader } from "../components/common/ClientSkeleton";
 import { GeometricBadge } from "../components/common/PortalIllustrations";
 
 const PASTEL_THEMES = [
@@ -152,7 +152,7 @@ export default function ClientProjectsPage() {
 
       {loading ? (
         <Box sx={{ py: 2 }}>
-          <BrandLoader message="Fetching client projects..." size="medium" />
+          <ClientFadeWebliixLoader message="Fetching client projects..." size="small" />
           <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }, gap: 3, mt: 3 }}>
             <ClientCardSkeleton />
             <ClientCardSkeleton />

@@ -27,7 +27,7 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import { tokens } from "../theme/tokens";
 import { invoiceApi, type ClientInvoice } from "../services/invoiceApi";
 import { BrandLoader } from "../components/common/BrandLoader";
-import { ClientKpiSkeleton } from "../components/common/ClientSkeleton";
+import { ClientKpiSkeleton, ClientFadeWebliixLoader } from "../components/common/ClientSkeleton";
 import { GeometricBadge } from "../components/common/PortalIllustrations";
 
 export default function ClientInvoicesPage() {
@@ -161,8 +161,8 @@ export default function ClientInvoicesPage() {
 
       {/* Invoice Table */}
       {loading ? (
-        <Box sx={{ py: 4, textAlign: "center" }}>
-          <BrandLoader message="Loading invoices & financial records..." size="medium" />
+        <Box sx={{ py: 6, textAlign: "center" }}>
+          <ClientFadeWebliixLoader message="Loading invoices & financial records..." size="medium" />
         </Box>
       ) : invoices.length === 0 ? (
         <Card sx={{ p: 6, textAlign: "center", borderRadius: tokens.borderRadius.lg, border: `1px solid ${tokens.colors.secondary[200]}` }}>

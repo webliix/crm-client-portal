@@ -27,6 +27,7 @@ import { projectApi, type ClientProject } from "../services/projectApi";
 import { invoiceApi } from "../services/invoiceApi";
 import { ticketApi } from "../services/ticketApi";
 import { BrandLoader } from "../components/common/BrandLoader";
+import { ClientDashboardSkeleton } from "../components/common/ClientSkeleton";
 import { IsometricCubeIllustration, GeometricBadge } from "../components/common/PortalIllustrations";
 
 export default function ClientDashboardPage() {
@@ -156,11 +157,7 @@ export default function ClientDashboardPage() {
   ];
 
   if (loading) {
-    return (
-      <Box sx={{ py: 12, textAlign: "center" }}>
-        <BrandLoader message="Loading client workspace..." size="medium" />
-      </Box>
-    );
+    return <ClientDashboardSkeleton />;
   }
 
   return (
