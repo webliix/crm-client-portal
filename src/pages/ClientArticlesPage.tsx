@@ -8,10 +8,6 @@ import Chip from "@mui/material/Chip";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Alert from "@mui/material/Alert";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
 
 // Icons
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
@@ -21,14 +17,13 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 
 import { tokens } from "../theme/tokens";
-import { articleApi, type ClientArticle } from "../services/articleApi";
-import { BrandLoader } from "../components/common/BrandLoader";
+import { articleApi, getExternalArticleUrl, type ClientArticle } from "../services/articleApi";
+import { ClientFadeWebliixLoader } from "../components/common/ClientSkeleton";
 import { IsometricCubeIllustration } from "../components/common/PortalIllustrations";
 
 export default function ClientArticlesPage() {
   const [articles, setArticles] = useState<ClientArticle[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedArticle, setSelectedArticle] = useState<ClientArticle | null>(null);
 
   // Newsletter subscribe
   const [subscribeEmail, setSubscribeEmail] = useState("");
@@ -42,7 +37,7 @@ export default function ClientArticlesPage() {
         if (Array.isArray(data) && data.length > 0) {
           setArticles(data);
         } else {
-          // Curated default client articles & guidelines
+          // Curated articles linked to public webliix blog
           setArticles([
             {
               id: 1,
@@ -53,11 +48,6 @@ export default function ClientArticlesPage() {
               readTimeMinutes: 5,
               createdAt: new Date().toISOString(),
               coverImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&auto=format&fit=crop&q=60",
-              content: `### Webliix Engineering Standards
-All client projects deployed through Webliix Hub comply with strict architectural specifications:
-1. **Zero-Trust Security**: End-to-end encryption for API keys and customer records.
-2. **Speed & Core Web Vitals**: Target Largest Contentful Paint (LCP) under 1.2s on production CDN.
-3. **Continuous Deployment**: Automated rollback mechanisms and containerized staging replicas.`,
             },
             {
               id: 2,
@@ -68,8 +58,6 @@ All client projects deployed through Webliix Hub comply with strict architectura
               readTimeMinutes: 7,
               createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
               coverImage: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=60",
-              content: `### High Availability Overview
-We implement automated failovers across AWS, Cloudflare Enterprise CDN, and Google Cloud Run. Databases feature point-in-time recovery and continuous snapshots.`,
             },
             {
               id: 3,
@@ -80,8 +68,6 @@ We implement automated failovers across AWS, Cloudflare Enterprise CDN, and Goog
               readTimeMinutes: 4,
               createdAt: new Date(Date.now() - 86400000 * 5).toISOString(),
               coverImage: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=60",
-              content: `### Organic Growth Strategies
-Optimizing semantic HTML structure, dynamic JSON-LD metadata, and server-side pre-rendering ensures rapid indexation by search engines.`,
             },
           ]);
         }
@@ -101,26 +87,32 @@ Optimizing semantic HTML structure, dynamic JSON-LD metadata, and server-side pr
     setSubscribing(false);
   };
 
+  const handleOpenExternal = (slug: string) => {
+    const url = getExternalArticleUrl(slug);
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
   if (loading) {
     return (
-      <Box sx={{ py: 12, textAlign: "center" }}>
-        <BrandLoader message="Loading articles & product guidelines..." size="medium" />
+      <Box sx={{ py: 10, textAlign: "center" }}>
+        <ClientFadeWebliixLoader message="Loading public blog articles & guidelines..." size="medium" />
       </Box>
     );
   }
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 3.5 }}>
-      {/* Featured Header Card with 3D Isometric Illustration */}
+      {/* Featured Header Card with Crisp Square Edges */}
       <Card
         sx={{
-          bgcolor: "#000000",
+          bgcolor: "#0f172a",
           color: "#ffffff",
-          borderRadius: "24px",
-          p: { xs: 3, md: 5 },
+          borderRadius: "8px",
+          p: { xs: 3, md: 4.5 },
           position: "relative",
           overflow: "hidden",
-          boxShadow: "0 12px 32px rgba(0,0,0,0.25)",
+          border: "1px solid #1e293b",
+          boxShadow: "0 4px 16px rgba(15,23,42,0.15)",
         }}
       >
         <Box
@@ -128,196 +120,209 @@ Optimizing semantic HTML structure, dynamic JSON-LD metadata, and server-side pr
             position: "absolute",
             right: { xs: -40, md: 20 },
             top: { xs: -20, md: -10 },
-            width: { xs: 240, md: 360 },
-            height: { xs: 200, md: 280 },
+            width: { xs: 220, md: 320 },
+            height: { xs: 180, md: 240 },
             pointerEvents: "none",
-            opacity: { xs: 0.7, md: 0.95 },
+            opacity: { xs: 0.6, md: 0.9 },
           }}
         >
           <IsometricCubeIllustration width="100%" height="100%" />
         </Box>
 
-        <Box sx={{ position: "relative", zIndex: 2, maxWidth: 640 }}>
+        <Box sx={{ position: "relative", zIndex: 2, maxWidth: 620 }}>
           <Chip
-            label="Articles & Guidelines"
+            label="External Blog & Guidelines"
             size="small"
-            sx={{ bgcolor: "rgba(255,255,255,0.15)", color: "#ffffff", fontWeight: 800, mb: 1.5 }}
+            sx={{ bgcolor: "rgba(255,255,255,0.15)", color: "#ffffff", fontWeight: 800, mb: 1.5, borderRadius: "4px" }}
           />
           <Typography
             variant="h4"
             fontWeight={900}
             letterSpacing="-0.03em"
-            sx={{ color: "#ffffff", fontSize: { xs: "1.6rem", md: "2.2rem" }, mb: 1.5 }}
+            sx={{ color: "#ffffff", fontSize: { xs: "1.5rem", md: "2.1rem" }, mb: 1.5 }}
           >
-            Product Guidelines & Tech Newsletter
+            Engineering Guidelines & Industry News
           </Typography>
-          <Typography variant="body1" sx={{ color: "#94a3b8", lineHeight: 1.6, mb: 3 }}>
-            Read published whitepapers, release notes, and engineering documentation maintained by Webliix for enterprise client partners.
+          <Typography variant="body1" sx={{ color: "#cbd5e1", lineHeight: 1.6, mb: 3 }}>
+            All whitepapers, design principles, and technical articles are published directly on our public blog platform.
           </Typography>
 
           <Button
             variant="contained"
             component="a"
-            href="https://webliix.com/blog"
+            href="https://webliix.in/blog"
             target="_blank"
             rel="noopener noreferrer"
             endIcon={<OpenInNewIcon fontSize="small" />}
             sx={{
               bgcolor: "#ffffff",
-              color: "#000000",
+              color: "#0f172a",
               fontWeight: 800,
-              borderRadius: "9999px",
-              px: 3,
-              py: 1.25,
+              borderRadius: "6px",
+              px: 2.75,
+              py: 1.1,
               textTransform: "none",
+              boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
               "&:hover": { bgcolor: "#f1f5f9" },
             }}
           >
-            Visit Public Knowledge Base
+            Explore Public Blog Hub
           </Button>
         </Box>
       </Card>
 
-      {/* Articles Grid */}
+      {/* Articles Grid - Square Cards linking to external site */}
       <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "repeat(3, 1fr)" }, gap: 3 }}>
         {articles.map((item) => (
           <Card
             key={item.id}
-            onClick={() => setSelectedArticle(item)}
+            onClick={() => handleOpenExternal(item.slug)}
             sx={{
-              borderRadius: "20px",
+              borderRadius: "8px",
               border: "1px solid #e2e8f0",
               bgcolor: "#ffffff",
               cursor: "pointer",
-              overflow: "hidden",
-              transition: "transform 0.2s ease, box-shadow 0.2s ease",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+              transition: "transform 0.2s ease, border-color 0.2s ease",
               "&:hover": {
                 transform: "translateY(-3px)",
-                boxShadow: "0 10px 24px -4px rgba(0,0,0,0.08)",
+                borderColor: "#0f172a",
+                boxShadow: "0 8px 20px -4px rgba(0,0,0,0.08)",
               },
             }}
           >
             {item.coverImage && (
-              <CardMedia component="img" height="160" image={item.coverImage} alt={item.title} />
+              <CardMedia
+                component="img"
+                height="170"
+                image={item.coverImage}
+                alt={item.title}
+                sx={{ objectFit: "cover", borderBottom: "1px solid #f1f5f9" }}
+              />
             )}
-            <CardContent sx={{ p: 2.75 }}>
+            <CardContent sx={{ p: 3, display: "flex", flexDirection: "column", flexGrow: 1 }}>
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1.5 }}>
                 <Chip
-                  label={item.category || "Documentation"}
+                  label={item.category || "Article"}
                   size="small"
-                  sx={{ bgcolor: "#f1f5f9", color: "#111827", fontWeight: 700, fontSize: "0.6875rem" }}
+                  sx={{
+                    fontWeight: 800,
+                    fontSize: "0.72rem",
+                    bgcolor: "#f1f5f9",
+                    color: "#0f172a",
+                    borderRadius: "4px",
+                  }}
                 />
-                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, color: "#94a3b8" }}>
-                  <AccessTimeIcon sx={{ fontSize: 13 }} />
-                  <Typography variant="caption">{item.readTimeMinutes || 5}m read</Typography>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, color: "#64748b" }}>
+                  <AccessTimeIcon sx={{ fontSize: 14 }} />
+                  <Typography variant="caption" fontWeight={700}>
+                    {item.readTimeMinutes || 5} min read
+                  </Typography>
                 </Box>
               </Box>
 
-              <Typography variant="h6" fontWeight={800} color="#0f172a" sx={{ fontSize: "1.05rem", lineHeight: 1.35, mb: 1 }}>
+              <Typography variant="h6" fontWeight={800} color="#0f172a" sx={{ fontSize: "1.05rem", mb: 1, lineHeight: 1.35 }}>
                 {item.title}
               </Typography>
 
               <Typography
                 variant="body2"
-                color="#64748b"
+                color="text.secondary"
                 sx={{
+                  mb: 2.5,
+                  flexGrow: 1,
                   display: "-webkit-box",
                   WebkitLineClamp: 3,
                   WebkitBoxOrient: "vertical",
                   overflow: "hidden",
-                  fontSize: "0.8125rem",
-                  lineHeight: 1.5,
-                  mb: 2,
+                  lineHeight: 1.55,
                 }}
               >
-                {item.excerpt || item.content?.slice(0, 140)}
+                {item.excerpt || "Read full technical documentation and industry analysis on Webliix Blog."}
               </Typography>
 
-              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, color: "#111827" }}>
-                <Typography variant="caption" fontWeight={800}>
-                  Read Full Article
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pt: 1, borderTop: "1px solid #f1f5f9" }}>
+                <Typography variant="caption" fontWeight={800} color="#0f172a" sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                  Read on webliix.in <OpenInNewIcon sx={{ fontSize: 13 }} />
                 </Typography>
-                <ArrowForwardIcon sx={{ fontSize: 13 }} />
+                <ArrowForwardIcon sx={{ fontSize: 16, color: "#0f172a" }} />
               </Box>
             </CardContent>
           </Card>
         ))}
       </Box>
 
-      {/* Newsletter Subscribe Box */}
+      {/* Newsletter Subscription Box with Crisp Square Controls */}
       <Card
         sx={{
+          borderRadius: "8px",
+          border: "1px solid #e2e8f0",
+          bgcolor: "#ffffff",
           p: { xs: 3, md: 4 },
-          borderRadius: "20px",
-          bgcolor: "#ede9fe",
-          border: "1px solid #ddd6fe",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: 3,
         }}
       >
-        <Box sx={{ maxWidth: 520 }}>
-          <Typography variant="h6" fontWeight={900} color="#0f172a" gutterBottom>
-            Subscribe to Webliix Engineering Dispatch
-          </Typography>
-          <Typography variant="body2" color="#64748b">
-            Receive monthly security summaries, feature releases, and cloud infrastructure tips directly in your inbox.
-          </Typography>
-          {subscribeSuccess && (
-            <Alert severity="success" sx={{ mt: 1.5, borderRadius: "10px" }}>
-              Thank you for subscribing! You will receive our next monthly dispatch.
-            </Alert>
-          )}
-        </Box>
-
-        <Box component="form" onSubmit={handleSubscribe} sx={{ display: "flex", gap: 1.5, minWidth: { xs: "100%", sm: 360 } }}>
-          <TextField
-            placeholder="Enter business email..."
-            size="small"
-            fullWidth
-            type="email"
-            required
-            value={subscribeEmail}
-            onChange={(e) => setSubscribeEmail(e.target.value)}
-            sx={{ bgcolor: "#ffffff", borderRadius: "10px" }}
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            disabled={subscribing || !subscribeEmail.trim()}
-            sx={{ bgcolor: "#111827", "&:hover": { bgcolor: "#1e293b" }, borderRadius: "10px", px: 3, fontWeight: 700 }}
-          >
-            {subscribing ? "..." : "Subscribe"}
-          </Button>
-        </Box>
-      </Card>
-
-      {/* Article Detail Modal */}
-      <Dialog open={Boolean(selectedArticle)} onClose={() => setSelectedArticle(null)} maxWidth="md" fullWidth>
-        {selectedArticle && (
-          <>
-            <DialogTitle sx={{ fontWeight: 800, pb: 1 }}>{selectedArticle.title}</DialogTitle>
-            <DialogContent dividers>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
-                <Chip label={selectedArticle.category || "Documentation"} size="small" />
-                <Typography variant="caption" color="text.secondary">
-                  Published: {new Date(selectedArticle.createdAt).toLocaleDateString()}
-                </Typography>
-              </Box>
-              <Typography variant="body1" sx={{ whiteSpace: "pre-wrap", lineHeight: 1.7, color: "#334155" }}>
-                {selectedArticle.content || selectedArticle.excerpt}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            justifyContent: "space-between",
+            alignItems: { xs: "flex-start", md: "center" },
+            gap: 3,
+          }}
+        >
+          <Box sx={{ maxWidth: 520 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+              <MailOutlineIcon sx={{ color: "#0f172a", fontSize: 22 }} />
+              <Typography variant="h6" fontWeight={900} color="#0f172a">
+                Subscribe to Client Dispatch
               </Typography>
-            </DialogContent>
-            <DialogActions sx={{ p: 2 }}>
-              <Button onClick={() => setSelectedArticle(null)} sx={{ fontWeight: 700 }}>
-                Close
-              </Button>
-            </DialogActions>
-          </>
+            </Box>
+            <Typography variant="body2" color="text.secondary">
+              Receive quarterly technical briefs, security patches, and product release updates directly to your inbox.
+            </Typography>
+          </Box>
+
+          <Box component="form" onSubmit={handleSubscribe} sx={{ display: "flex", gap: 1.5, width: { xs: "100%", md: "auto" } }}>
+            <TextField
+              size="small"
+              placeholder="Enter your email address"
+              type="email"
+              required
+              value={subscribeEmail}
+              onChange={(e) => setSubscribeEmail(e.target.value)}
+              sx={{
+                minWidth: { xs: "100%", sm: 260 },
+                "& .MuiOutlinedInput-root": { borderRadius: "6px" },
+              }}
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={subscribing}
+              sx={{
+                bgcolor: "#0f172a",
+                color: "#ffffff",
+                px: 3,
+                fontWeight: 800,
+                borderRadius: "6px",
+                textTransform: "none",
+                "&:hover": { bgcolor: "#1e293b" },
+              }}
+            >
+              {subscribing ? "..." : "Subscribe"}
+            </Button>
+          </Box>
+        </Box>
+
+        {subscribeSuccess && (
+          <Alert severity="success" sx={{ mt: 2, borderRadius: "6px" }}>
+            You have successfully subscribed to Webliix updates!
+          </Alert>
         )}
-      </Dialog>
+      </Card>
     </Box>
   );
 }

@@ -174,6 +174,7 @@ export default function ClientProfilePage() {
             sx={{
               width: 76,
               height: 76,
+              borderRadius: "8px",
               bgcolor: tokens.colors.primary.main,
               fontSize: "2.2rem",
               fontWeight: 800,
@@ -187,8 +188,8 @@ export default function ClientProfilePage() {
               <Typography variant="h5" fontWeight={800} color={tokens.colors.secondary[900]}>
                 {user?.name || "Client Partner"}
               </Typography>
-              <Chip label="Verified Enterprise Client" color="primary" size="small" sx={{ fontWeight: 700 }} />
-              <Chip label={`Client ID: #CLI-${user?.id || 101}`} variant="outlined" size="small" sx={{ fontWeight: 600 }} />
+              <Chip label="Verified Enterprise Client" color="primary" size="small" sx={{ fontWeight: 700, borderRadius: "4px" }} />
+              <Chip label={`Client ID: #CLI-${user?.id || 101}`} variant="outlined" size="small" sx={{ fontWeight: 600, borderRadius: "4px" }} />
             </Box>
             <Typography variant="body2" color="text.secondary">
               {user?.email} • {phone || "No phone registered"} • Timezone: {timezone}

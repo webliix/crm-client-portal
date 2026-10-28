@@ -196,6 +196,29 @@ export function ClientFloatingChatWidget() {
     }
   };
 
+  const [resolvingChat, setResolvingChat] = useState(false);
+
+  const handleEndActiveChat = async () => {
+    if (!activeTicket || resolvingChat) return;
+    setResolvingChat(true);
+    try {
+      await ticketApi.resolveTicket(activeTicket.id);
+      await ticketApi.addComment(
+        activeTicket.id,
+        "Chat ended by client. Ticket marked as RESOLVED.",
+        user?.name || "Client"
+      );
+      const updated = { ...activeTicket, status: "RESOLVED" };
+      setActiveTicket(updated);
+      setExistingTickets((prev) => prev.map((t) => (t.id === activeTicket.id ? updated : t)));
+      await fetchComments(activeTicket.id);
+    } catch (err) {
+      console.error("Failed to resolve chat", err);
+    } finally {
+      setResolvingChat(false);
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -227,9 +250,10 @@ export function ClientFloatingChatWidget() {
             variant="extended"
             onClick={() => setIsOpen(true)}
             sx={{
+              borderRadius: "6px",
               bgcolor: tokens.colors.primary.main,
               color: "#ffffff",
-              boxShadow: "0 8px 24px rgba(0, 102, 255, 0.35)",
+              boxShadow: "0 4px 14px rgba(0, 0, 0, 0.2)",
               fontWeight: 800,
               textTransform: "none",
               px: 2.5,
@@ -258,7 +282,7 @@ export function ClientFloatingChatWidget() {
             bottom: { xs: 0, sm: 24 },
             width: { xs: "100%", sm: 400 },
             height: { xs: "100%", sm: 580 },
-            borderRadius: { xs: 0, sm: 3 },
+            borderRadius: { xs: 0, sm: "8px" },
             display: "flex",
             flexDirection: "column",
             overflow: "hidden",
@@ -528,6 +552,29 @@ export function ClientFloatingChatWidget() {
                   </Typography>
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  {activeTicket.status !== "RESOLVED" && activeTicket.status !== "CLOSED" && (
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      color="error"
+                      onClick={handleEndActiveChat}
+                      disabled={resolvingChat}
+                      sx={{
+                        fontSize: "0.68rem",
+                        py: 0.25,
+                        px: 0.8,
+                        borderRadius: "4px",
+                        fontWeight: 800,
+                        textTransform: "none",
+                        minWidth: "auto",
+                        borderColor: "#ef4444",
+                        color: "#ef4444",
+                        "&:hover": { bgcolor: "#fef2f2" },
+                      }}
+                    >
+                      {resolvingChat ? "Ending..." : "End Chat"}
+                    </Button>
+                  )}
                   <Button
                     size="small"
                     variant="text"

@@ -89,16 +89,16 @@ export default function ClientInvoicesPage() {
           <>
             <Card
               sx={{
-                borderRadius: "28px",
+                borderRadius: "8px",
                 bgcolor: tokens.colors.pastel.sky.bg,
                 border: `1.5px solid ${tokens.colors.pastel.sky.border}`,
-                boxShadow: "0 10px 30px -10px rgba(0,0,0,0.04)",
-                transition: "transform 0.2s ease",
-                "&:hover": { transform: "translateY(-3px)" },
+                boxShadow: "0 4px 16px -4px rgba(0,0,0,0.04)",
+                transition: "transform 0.15s ease",
+                "&:hover": { transform: "translateY(-2px)" },
               }}
             >
               <CardContent sx={{ p: 3, display: "flex", alignItems: "center", gap: 2.5 }}>
-                <GeometricBadge type="rings" size={50} />
+                <GeometricBadge type="rings" size={44} />
                 <Box>
                   <Typography variant="caption" fontWeight={800} color="#0f172a" textTransform="uppercase" letterSpacing="0.05em">
                     Total Invoiced
@@ -112,16 +112,16 @@ export default function ClientInvoicesPage() {
 
             <Card
               sx={{
-                borderRadius: "28px",
+                borderRadius: "8px",
                 bgcolor: tokens.colors.pastel.mint.bg,
                 border: `1.5px solid ${tokens.colors.pastel.mint.border}`,
-                boxShadow: "0 10px 30px -10px rgba(0,0,0,0.04)",
-                transition: "transform 0.2s ease",
-                "&:hover": { transform: "translateY(-3px)" },
+                boxShadow: "0 4px 16px -4px rgba(0,0,0,0.04)",
+                transition: "transform 0.15s ease",
+                "&:hover": { transform: "translateY(-2px)" },
               }}
             >
               <CardContent sx={{ p: 3, display: "flex", alignItems: "center", gap: 2.5 }}>
-                <GeometricBadge type="cube" size={50} />
+                <GeometricBadge type="cube" size={44} />
                 <Box>
                   <Typography variant="caption" fontWeight={800} color="#0f172a" textTransform="uppercase" letterSpacing="0.05em">
                     Settled & Paid
@@ -135,16 +135,16 @@ export default function ClientInvoicesPage() {
 
             <Card
               sx={{
-                borderRadius: "28px",
+                borderRadius: "8px",
                 bgcolor: tokens.colors.pastel.blush.bg,
                 border: `1.5px solid ${tokens.colors.pastel.blush.border}`,
-                boxShadow: "0 10px 30px -10px rgba(0,0,0,0.04)",
-                transition: "transform 0.2s ease",
-                "&:hover": { transform: "translateY(-3px)" },
+                boxShadow: "0 4px 16px -4px rgba(0,0,0,0.04)",
+                transition: "transform 0.15s ease",
+                "&:hover": { transform: "translateY(-2px)" },
               }}
             >
               <CardContent sx={{ p: 3, display: "flex", alignItems: "center", gap: 2.5 }}>
-                <GeometricBadge type="star" size={50} />
+                <GeometricBadge type="star" size={44} />
                 <Box>
                   <Typography variant="caption" fontWeight={800} color="#0f172a" textTransform="uppercase" letterSpacing="0.05em">
                     Pending Balance

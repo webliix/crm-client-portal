@@ -15,6 +15,11 @@ export interface ClientArticle {
   featured?: boolean;
 }
 
+export function getExternalArticleUrl(slug?: string): string {
+  const base = "https://webliix.in";
+  return slug ? `${base}/blog/${slug}` : `${base}/blog`;
+}
+
 export const articleApi = {
   async getPublishedArticles(): Promise<ClientArticle[]> {
     try {

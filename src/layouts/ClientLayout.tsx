@@ -1,14 +1,11 @@
-import React, { useState, useEffect, type ReactNode } from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
+import Drawer from "@mui/material/Drawer";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Avatar from "@mui/material/Avatar";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import Divider from "@mui/material/Divider";
-import Drawer from "@mui/material/Drawer";
 import Badge from "@mui/material/Badge";
 import Tooltip from "@mui/material/Tooltip";
 import Dialog from "@mui/material/Dialog";
@@ -17,6 +14,9 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import TextField from "@mui/material/TextField";
 import MenuItemSelect from "@mui/material/MenuItem";
+import Paper from "@mui/material/Paper";
+import BottomNavigation from "@mui/material/BottomNavigation";
+import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 
 // Icons
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
@@ -24,17 +24,12 @@ import FolderSpecialOutlinedIcon from "@mui/icons-material/FolderSpecialOutlined
 import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 import ForumOutlinedIcon from "@mui/icons-material/ForumOutlined";
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import SearchIcon from "@mui/icons-material/Search";
-import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import MenuIcon from "@mui/icons-material/Menu";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
-import BottomNavigation from "@mui/material/BottomNavigation";
-import BottomNavigationAction from "@mui/material/BottomNavigationAction";
-import Paper from "@mui/material/Paper";
 
 import { tokens } from "../theme/tokens";
 import { authService } from "../services/authService";
@@ -43,34 +38,35 @@ import { ticketApi } from "../services/ticketApi";
 import { ClientNotificationDrawer } from "../components/notifications/ClientNotificationDrawer";
 import { ClientFloatingChatWidget } from "../components/chat/ClientFloatingChatWidget";
 
-interface Props {
-  children: ReactNode;
+interface ClientLayoutProps {
+  children: React.ReactNode;
 }
 
-export function ClientLayout({ children }: Props) {
+export function ClientLayout({ children }: ClientLayoutProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const user = authService.getCurrentUser();
 
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [notifDrawerOpen, setNotifDrawerOpen] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(2);
+  const [unreadCount, setUnreadCount] = useState<number>(0);
 
-  // New Project / Inquiry Modal State
+  // Quick New Project Inquiry Modal
   const [openNewProjectModal, setOpenNewProjectModal] = useState(false);
-  const [inquiryType, setInquiryType] = useState("NEW_PROJECT");
   const [inquiryTitle, setInquiryTitle] = useState("");
+  const [inquiryType, setInquiryType] = useState("NEW_PROJECT");
   const [inquiryDetails, setInquiryDetails] = useState("");
   const [submittingInquiry, setSubmittingInquiry] = useState(false);
 
-  // Check unread count on mount
   useEffect(() => {
-    notificationApi.getMyNotifications().then((list) => {
-      const unread = list.filter((n) => n.status === "UNREAD").length;
-      setUnreadCount(unread > 0 ? unread : 2);
-    }).catch(() => {});
-  }, []);
+    notificationApi
+      .getMyNotifications()
+      .then((list) => {
+        const unread = list.filter((n) => n.status !== "READ").length;
+        setUnreadCount(unread);
+      })
+      .catch(() => {});
+  }, [location.pathname]);
 
   const handleLogout = () => {
     authService.logout();
@@ -78,40 +74,35 @@ export function ClientLayout({ children }: Props) {
   };
 
   const handleCreateInquiry = async () => {
-    if (!inquiryTitle.trim() || !inquiryDetails.trim() || submittingInquiry) return;
+    if (!inquiryTitle.trim() || !inquiryDetails.trim()) return;
     setSubmittingInquiry(true);
     try {
-      const created = await ticketApi.createTicket(
-        `[${inquiryType}] ${inquiryTitle.trim()}`,
-        inquiryDetails.trim(),
-        inquiryType === "NEW_PROJECT" ? "FEATURE" : "SUPPORT"
+      await ticketApi.createTicket(
+        `[${inquiryType}] ${inquiryTitle}`,
+        inquiryDetails,
+        "PROJECT_INQUIRY"
       );
-      if (created) {
-        setOpenNewProjectModal(false);
-        setInquiryTitle("");
-        setInquiryDetails("");
-        navigate(`/tickets?ticketId=${created.id}`);
-      } else {
-        alert("Failed to submit inquiry. Please try again.");
-      }
-    } catch (err: any) {
-      alert(err?.message || "Failed to submit inquiry");
+      setOpenNewProjectModal(false);
+      setInquiryTitle("");
+      setInquiryDetails("");
+      navigate("/tickets");
+    } catch (err) {
+      console.error(err);
     } finally {
       setSubmittingInquiry(false);
     }
   };
 
-  // Nav Items matching the clean template design
   const navItems = [
-    { label: "Dashboard", path: "/dashboard", icon: <DashboardOutlinedIcon sx={{ fontSize: 19 }} /> },
-    { label: "Projects", path: "/projects", icon: <FolderSpecialOutlinedIcon sx={{ fontSize: 19 }} /> },
-    { label: "Invoices & Billing", path: "/invoices", icon: <ReceiptLongOutlinedIcon sx={{ fontSize: 19 }} /> },
-    { label: "Support & Live Chat", path: "/tickets", icon: <ForumOutlinedIcon sx={{ fontSize: 19 }} /> },
-    { label: "Articles & News", path: "/articles", icon: <ArticleOutlinedIcon sx={{ fontSize: 19 }} /> },
-    { label: "Settings", path: "/profile", icon: <SettingsOutlinedIcon sx={{ fontSize: 19 }} /> },
+    { label: "Dashboard", path: "/dashboard", icon: <DashboardOutlinedIcon sx={{ fontSize: 20 }} /> },
+    { label: "Projects", path: "/projects", icon: <FolderSpecialOutlinedIcon sx={{ fontSize: 20 }} /> },
+    { label: "Invoices", path: "/invoices", icon: <ReceiptLongOutlinedIcon sx={{ fontSize: 20 }} /> },
+    { label: "Chat & Support", path: "/tickets", icon: <ForumOutlinedIcon sx={{ fontSize: 20 }} /> },
+    { label: "Articles & News", path: "/articles", icon: <ArticleOutlinedIcon sx={{ fontSize: 20 }} /> },
+    { label: "Notifications", path: "/notifications", icon: <NotificationsNoneOutlinedIcon sx={{ fontSize: 20 }} /> },
   ];
 
-  // Dynamic formatted date e.g. "Monday, 20 May 2022"
+  // Dynamic Date string
   const formattedToday = new Intl.DateTimeFormat("en-US", {
     weekday: "long",
     day: "numeric",
@@ -124,36 +115,28 @@ export function ClientLayout({ children }: Props) {
   const sidebarContent = (
     <Box
       sx={{
-        width: 250,
+        width: 240,
         height: "100%",
         bgcolor: "#ffffff",
-        color: "#111827",
+        color: "#0f172a",
         display: "flex",
         flexDirection: "column",
-        borderRight: "1px solid #f1f5f9",
-        p: 3,
+        borderRight: "1px solid #e2e8f0",
+        p: 2.5,
       }}
     >
-      {/* Brand Header */}
-      <Box sx={{ mb: 4, display: "flex", alignItems: "center", gap: 1.5 }}>
+      {/* Brand Header - Text Webliix Removed, Logo Enlarged */}
+      <Box sx={{ mb: 3.5, display: "flex", alignItems: "center", justifyContent: "flex-start", pt: 0.5 }}>
         <Box
           component="img"
           src="https://res.cloudinary.com/vhth8clt/image/upload/v1788210409/logo.png"
-          alt="Webliix"
-          sx={{ height: 28, objectFit: "contain" }}
+          alt="Client Portal"
+          sx={{ height: 42, maxWidth: 170, objectFit: "contain" }}
         />
-        <Typography
-          variant="h6"
-          fontWeight={900}
-          letterSpacing="-0.03em"
-          sx={{ fontSize: "1.25rem", color: "#111827", fontStyle: "italic" }}
-        >
-          Webliix
-        </Typography>
       </Box>
 
-      {/* Nav List */}
-      <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 1 }}>
+      {/* Nav List with Crisp Square Buttons */}
+      <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 0.75 }}>
         {navItems.map((item) => {
           const active = location.pathname.startsWith(item.path);
           return (
@@ -165,10 +148,9 @@ export function ClientLayout({ children }: Props) {
               startIcon={
                 <Box
                   sx={{
-                    color: active ? "#111827" : "#94a3b8",
+                    color: active ? "#0f172a" : "#64748b",
                     display: "flex",
                     alignItems: "center",
-                    transition: "color 0.15s ease",
                   }}
                 >
                   {item.icon}
@@ -177,18 +159,19 @@ export function ClientLayout({ children }: Props) {
               sx={{
                 justifyContent: "flex-start",
                 px: 2,
-                py: 1.25,
-                borderRadius: `${tokens.borderRadius.md}px`,
-                fontWeight: active ? 800 : 500,
-                fontSize: "0.875rem",
+                py: 1.2,
+                borderRadius: "6px",
+                fontWeight: active ? 800 : 600,
+                fontSize: "0.86rem",
                 textTransform: "none",
-                color: active ? "#111827" : "#64748b",
+                color: active ? "#0f172a" : "#64748b",
                 bgcolor: active ? "#f1f5f9" : "transparent",
+                border: active ? "1px solid #e2e8f0" : "1px solid transparent",
                 boxShadow: "none",
                 transition: "all 0.15s ease",
                 "&:hover": {
                   bgcolor: active ? "#f1f5f9" : "#f8fafc",
-                  color: "#111827",
+                  color: "#0f172a",
                 },
               }}
             >
@@ -203,13 +186,13 @@ export function ClientLayout({ children }: Props) {
           sx={{
             justifyContent: "flex-start",
             px: 2,
-            py: 1.25,
-            borderRadius: `${tokens.borderRadius.md}px`,
-            fontWeight: 500,
-            fontSize: "0.875rem",
+            py: 1.2,
+            borderRadius: "6px",
+            fontWeight: 600,
+            fontSize: "0.86rem",
             textTransform: "none",
             color: "#64748b",
-            mt: 2,
+            mt: 1.5,
             "&:hover": {
               bgcolor: "#fef2f2",
               color: "#ef4444",
@@ -220,7 +203,7 @@ export function ClientLayout({ children }: Props) {
         </Button>
       </Box>
 
-      {/* User Profile Pill at Bottom of Sidebar */}
+      {/* User Profile Square Card at Bottom of Sidebar */}
       <Box
         component={Link}
         to="/profile"
@@ -228,31 +211,34 @@ export function ClientLayout({ children }: Props) {
           display: "flex",
           alignItems: "center",
           gap: 1.5,
-          p: 1.25,
-          borderRadius: `${tokens.borderRadius.lg}px`,
+          p: 1.5,
+          borderRadius: "8px",
+          border: "1px solid #e2e8f0",
+          bgcolor: "#f8fafc",
           textDecoration: "none",
           transition: "background-color 0.15s ease",
-          "&:hover": { bgcolor: "#f8fafc" },
+          "&:hover": { bgcolor: "#f1f5f9" },
         }}
       >
         <Avatar
           sx={{
-            width: 38,
-            height: 38,
-            bgcolor: "#111827",
+            width: 36,
+            height: 36,
+            bgcolor: "#0f172a",
             color: "#ffffff",
             fontWeight: 800,
-            fontSize: "0.875rem",
+            fontSize: "0.85rem",
+            borderRadius: "6px",
           }}
         >
-          {(user?.name || "J").charAt(0).toUpperCase()}
+          {(user?.name || "C").charAt(0).toUpperCase()}
         </Avatar>
         <Box sx={{ minWidth: 0 }}>
-          <Typography variant="body2" fontWeight={800} color="#111827" noWrap>
-            {user?.name || "Jane D."}
+          <Typography variant="body2" fontWeight={800} color="#0f172a" noWrap>
+            {user?.name || "Client Account"}
           </Typography>
-          <Typography variant="caption" color="#94a3b8" sx={{ fontSize: "0.75rem" }}>
-            Profile
+          <Typography variant="caption" color="#64748b" sx={{ fontSize: "0.72rem", display: "block" }} noWrap>
+            {user?.email || "Settings & Profile"}
           </Typography>
         </Box>
       </Box>
@@ -274,7 +260,7 @@ export function ClientLayout({ children }: Props) {
           top: 0,
           left: 0,
           bottom: 0,
-          width: 250,
+          width: 240,
           zIndex: 40,
         }}
       >
@@ -282,13 +268,14 @@ export function ClientLayout({ children }: Props) {
       </Box>
 
       {/* Main Content Area */}
-      <Box sx={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, ml: { xs: 0, md: "250px" } }}>
-        {/* Top Header Bar matching reference image */}
+      <Box sx={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, ml: { xs: 0, md: "240px" } }}>
+        {/* Top Header Bar */}
         <Box
           sx={{
-            px: { xs: 2.5, md: 5 },
+            px: { xs: 2.5, md: 4 },
             py: 2.5,
-            bgcolor: "#f8fafc",
+            bgcolor: "#ffffff",
+            borderBottom: "1px solid #e2e8f0",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -296,11 +283,11 @@ export function ClientLayout({ children }: Props) {
             gap: 2,
           }}
         >
-          {/* Greeting on Left */}
+          {/* Prominent High-Contrast Greeting on Left */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
             <IconButton
               onClick={() => setMobileOpen(true)}
-              sx={{ display: { xs: "inline-flex", md: "none" }, p: 0.5 }}
+              sx={{ display: { xs: "inline-flex", md: "none" }, p: 0.5, borderRadius: "6px" }}
             >
               <MenuIcon />
             </IconButton>
@@ -311,11 +298,14 @@ export function ClientLayout({ children }: Props) {
                 fontWeight={900}
                 color="#0f172a"
                 letterSpacing="-0.03em"
-                sx={{ fontSize: { xs: "1.45rem", md: "1.85rem" } }}
+                sx={{
+                  fontSize: { xs: "1.45rem", sm: "1.75rem", md: "2rem" },
+                  lineHeight: 1.15,
+                }}
               >
-                Hello, {firstName}
+                Hello, {firstName} 👋
               </Typography>
-              <Typography variant="body2" color="#64748b" sx={{ fontSize: "0.85rem", fontWeight: 500, mt: 0.25 }}>
+              <Typography variant="body2" sx={{ color: "#475569", fontSize: "0.86rem", fontWeight: 600, mt: 0.35 }}>
                 Today is {formattedToday}
               </Typography>
             </Box>
@@ -323,16 +313,17 @@ export function ClientLayout({ children }: Props) {
 
           {/* Action Buttons on Right */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-            {/* Search Icon */}
-            <Tooltip title="Search workspace">
+            {/* Search Square Button */}
+            <Tooltip title="Search projects">
               <IconButton
                 onClick={() => navigate("/projects")}
                 sx={{
-                  bgcolor: "#ffffff",
+                  bgcolor: "#f8fafc",
                   border: "1px solid #e2e8f0",
-                  width: 40,
-                  height: 40,
-                  color: "#475569",
+                  width: 38,
+                  height: 38,
+                  borderRadius: "6px",
+                  color: "#0f172a",
                   "&:hover": { bgcolor: "#f1f5f9" },
                 }}
               >
@@ -340,16 +331,17 @@ export function ClientLayout({ children }: Props) {
               </IconButton>
             </Tooltip>
 
-            {/* Notification Bell with Badge */}
+            {/* Notification Bell Square Button with Badge */}
             <Tooltip title="Notifications">
               <IconButton
                 onClick={() => setNotifDrawerOpen(true)}
                 sx={{
-                  bgcolor: "#ffffff",
+                  bgcolor: "#f8fafc",
                   border: "1px solid #e2e8f0",
-                  width: 40,
-                  height: 40,
-                  color: "#475569",
+                  width: 38,
+                  height: 38,
+                  borderRadius: "6px",
+                  color: "#0f172a",
                   "&:hover": { bgcolor: "#f1f5f9" },
                 }}
               >
@@ -359,24 +351,23 @@ export function ClientLayout({ children }: Props) {
               </IconButton>
             </Tooltip>
 
-            {/* + New projects Black Pill Button */}
+            {/* + New projects Square Button */}
             <Button
               variant="contained"
-              startIcon={<AddIcon sx={{ fontSize: 18 }} />}
+              startIcon={<AddIcon sx={{ fontSize: 17 }} />}
               onClick={() => setOpenNewProjectModal(true)}
               sx={{
-                bgcolor: "#000000",
+                bgcolor: "#0f172a",
                 color: "#ffffff",
-                px: 2.75,
-                py: 1.1,
-                borderRadius: "9999px",
-                fontWeight: 700,
-                fontSize: "0.875rem",
+                px: 2.25,
+                py: 0.95,
+                borderRadius: "6px",
+                fontWeight: 800,
+                fontSize: "0.85rem",
                 textTransform: "none",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
                 "&:hover": {
                   bgcolor: "#1e293b",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.25)",
                 },
               }}
             >
@@ -385,14 +376,14 @@ export function ClientLayout({ children }: Props) {
           </Box>
         </Box>
 
-        {/* Content Body */}
-        <Box component="main" sx={{ flex: 1, px: { xs: 2, md: 5 }, pb: { xs: 9, md: 4 } }}>
+        {/* Content Body with Proper Spacing Rule */}
+        <Box component="main" sx={{ flex: 1, p: { xs: 2.5, md: 4 }, pb: { xs: 9, md: 4 }, minWidth: 0, overflowX: "hidden" }}>
           {children}
         </Box>
 
         {/* Mobile Bottom Navigation Bar */}
         <Paper
-          elevation={12}
+          elevation={4}
           sx={{
             display: { xs: "block", md: "none" },
             position: "fixed",
@@ -409,20 +400,20 @@ export function ClientLayout({ children }: Props) {
             value={location.pathname}
             onChange={(_, newValue) => navigate(newValue)}
             sx={{
-              height: 60,
+              height: 56,
               "& .MuiBottomNavigationAction-root": {
                 minWidth: "auto",
                 px: 1,
                 color: "#64748b",
-                "&.Mui-selected": { color: "#111827", fontWeight: 800 },
+                "&.Mui-selected": { color: "#0f172a", fontWeight: 800 },
               },
             }}
           >
-            <BottomNavigationAction label="Dashboard" value="/dashboard" icon={<DashboardOutlinedIcon sx={{ fontSize: 20 }} />} />
-            <BottomNavigationAction label="Projects" value="/projects" icon={<FolderSpecialOutlinedIcon sx={{ fontSize: 20 }} />} />
-            <BottomNavigationAction label="Invoices" value="/invoices" icon={<ReceiptLongOutlinedIcon sx={{ fontSize: 20 }} />} />
-            <BottomNavigationAction label="Chat" value="/tickets" icon={<ForumOutlinedIcon sx={{ fontSize: 20 }} />} />
-            <BottomNavigationAction label="Profile" value="/profile" icon={<PersonOutlinedIcon sx={{ fontSize: 20 }} />} />
+            <BottomNavigationAction label="Dashboard" value="/dashboard" icon={<DashboardOutlinedIcon sx={{ fontSize: 19 }} />} />
+            <BottomNavigationAction label="Projects" value="/projects" icon={<FolderSpecialOutlinedIcon sx={{ fontSize: 19 }} />} />
+            <BottomNavigationAction label="Invoices" value="/invoices" icon={<ReceiptLongOutlinedIcon sx={{ fontSize: 19 }} />} />
+            <BottomNavigationAction label="Chat" value="/tickets" icon={<ForumOutlinedIcon sx={{ fontSize: 19 }} />} />
+            <BottomNavigationAction label="Profile" value="/profile" icon={<PersonOutlinedIcon sx={{ fontSize: 19 }} />} />
           </BottomNavigation>
         </Paper>
 
@@ -430,16 +421,22 @@ export function ClientLayout({ children }: Props) {
         <ClientNotificationDrawer
           open={notifDrawerOpen}
           onClose={() => setNotifDrawerOpen(false)}
-          onUnreadChange={(count) => setUnreadCount(count)}
+          onUnreadChange={(count: number) => setUnreadCount(count)}
         />
 
         {/* Floating Chat Widget */}
         <ClientFloatingChatWidget />
 
-        {/* New Project / Inquiry Modal */}
-        <Dialog open={openNewProjectModal} onClose={() => setOpenNewProjectModal(false)} maxWidth="sm" fullWidth>
-          <DialogTitle sx={{ fontWeight: 800, pb: 1 }}>Submit Project Inquiry / Request</DialogTitle>
-          <DialogContent dividers>
+        {/* New Project / Inquiry Square Modal */}
+        <Dialog
+          open={openNewProjectModal}
+          onClose={() => setOpenNewProjectModal(false)}
+          maxWidth="sm"
+          fullWidth
+          PaperProps={{ sx: { borderRadius: "8px", p: 1 } }}
+        >
+          <DialogTitle sx={{ fontWeight: 800, color: "#0f172a", pb: 1 }}>Submit Project Inquiry / Request</DialogTitle>
+          <DialogContent dividers sx={{ borderColor: "#f1f5f9" }}>
             <Box sx={{ display: "grid", gap: 2.5, pt: 1 }}>
               <TextField
                 select
@@ -447,6 +444,7 @@ export function ClientLayout({ children }: Props) {
                 fullWidth
                 value={inquiryType}
                 onChange={(e) => setInquiryType(e.target.value)}
+                sx={{ "& .MuiOutlinedInput-root": { borderRadius: "6px" } }}
               >
                 <MenuItemSelect value="NEW_PROJECT">New Web / App Project</MenuItemSelect>
                 <MenuItemSelect value="FEATURE_REQUEST">Feature Request / Enhancement</MenuItemSelect>
@@ -461,6 +459,7 @@ export function ClientLayout({ children }: Props) {
                 value={inquiryTitle}
                 onChange={(e) => setInquiryTitle(e.target.value)}
                 placeholder="e.g. Fintech Mobile App Redesign or Domain Migration"
+                sx={{ "& .MuiOutlinedInput-root": { borderRadius: "6px" } }}
               />
 
               <TextField
@@ -472,16 +471,19 @@ export function ClientLayout({ children }: Props) {
                 value={inquiryDetails}
                 onChange={(e) => setInquiryDetails(e.target.value)}
                 placeholder="Please outline the deliverables, timelines, or questions..."
+                sx={{ "& .MuiOutlinedInput-root": { borderRadius: "6px" } }}
               />
             </Box>
           </DialogContent>
-          <DialogActions sx={{ p: 2.5 }}>
-            <Button onClick={() => setOpenNewProjectModal(false)}>Cancel</Button>
+          <DialogActions sx={{ p: 2 }}>
+            <Button onClick={() => setOpenNewProjectModal(false)} sx={{ fontWeight: 700, color: "#64748b", borderRadius: "6px" }}>
+              Cancel
+            </Button>
             <Button
               variant="contained"
               disabled={!inquiryTitle.trim() || !inquiryDetails.trim() || submittingInquiry}
               onClick={handleCreateInquiry}
-              sx={{ bgcolor: "#000000", "&:hover": { bgcolor: "#1e293b" }, fontWeight: 700, borderRadius: "9999px", px: 3 }}
+              sx={{ bgcolor: "#0f172a", "&:hover": { bgcolor: "#1e293b" }, fontWeight: 800, borderRadius: "6px", px: 3 }}
             >
               {submittingInquiry ? "Submitting..." : "Send Request"}
             </Button>

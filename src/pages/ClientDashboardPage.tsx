@@ -20,13 +20,13 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 
 import { tokens } from "../theme/tokens";
 import { authService } from "../services/authService";
 import { projectApi, type ClientProject } from "../services/projectApi";
 import { invoiceApi } from "../services/invoiceApi";
 import { ticketApi } from "../services/ticketApi";
-import { BrandLoader } from "../components/common/BrandLoader";
 import { ClientDashboardSkeleton } from "../components/common/ClientSkeleton";
 import { IsometricCubeIllustration, GeometricBadge } from "../components/common/PortalIllustrations";
 
@@ -161,8 +161,8 @@ export default function ClientDashboardPage() {
   }
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 3.5 }}>
-      {/* 1. TOP HERO SECTION: 3 Pastel Cards Matching Reference Image */}
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 3.5, width: "100%" }}>
+      {/* 1. TOP HERO SECTION: 3 Pastel Cards with Square Edges */}
       <Box
         sx={{
           display: "grid",
@@ -183,16 +183,16 @@ export default function ClientDashboardPage() {
               }}
               sx={{
                 bgcolor: card.palette.bg,
-                border: `1px solid ${card.palette.border}`,
-                borderRadius: "20px",
+                border: `1.5px solid ${card.palette.border}`,
+                borderRadius: "8px",
                 p: 2.75,
-                boxShadow: "none",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
                 cursor: "pointer",
                 transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
                 position: "relative",
                 "&:hover": {
                   transform: "translateY(-3px)",
-                  boxShadow: "0 12px 24px -4px rgba(0,0,0,0.06)",
+                  boxShadow: "0 10px 24px -4px rgba(0,0,0,0.08)",
                 },
               }}
             >
@@ -205,7 +205,7 @@ export default function ClientDashboardPage() {
                     e.stopPropagation();
                     setMenuAnchor({ el: e.currentTarget, projectId: card.id });
                   }}
-                  sx={{ color: "#475569", p: 0.5 }}
+                  sx={{ color: "#475569", p: 0.5, borderRadius: "4px" }}
                 >
                   <MoreVertIcon fontSize="small" />
                 </IconButton>
@@ -214,7 +214,7 @@ export default function ClientDashboardPage() {
               {/* Title */}
               <Typography
                 variant="h6"
-                fontWeight={800}
+                fontWeight={900}
                 letterSpacing="-0.02em"
                 sx={{ color: card.palette.title, fontSize: "1.15rem", lineHeight: 1.3, mb: 1 }}
               >
@@ -224,20 +224,20 @@ export default function ClientDashboardPage() {
               {/* Tasks / Progress Text */}
               <Typography
                 variant="caption"
-                fontWeight={700}
-                sx={{ color: card.palette.text, fontSize: "0.8125rem", display: "block", mb: 1.25 }}
+                fontWeight={800}
+                sx={{ color: card.palette.text, fontSize: "0.82rem", display: "block", mb: 1.25 }}
               >
                 {card.tasksLabel}
               </Typography>
 
-              {/* Dark Progress Bar */}
-              <Box sx={{ width: "100%", bgcolor: "rgba(0, 0, 0, 0.08)", borderRadius: "9999px", height: 5, overflow: "hidden" }}>
+              {/* Dark Progress Bar with Square Edges */}
+              <Box sx={{ width: "100%", bgcolor: "rgba(0, 0, 0, 0.08)", borderRadius: "4px", height: 5, overflow: "hidden" }}>
                 <Box
                   sx={{
                     width: `${card.progress}%`,
                     height: "100%",
                     bgcolor: card.palette.bar,
-                    borderRadius: "9999px",
+                    borderRadius: "4px",
                   }}
                 />
               </Box>
@@ -262,13 +262,13 @@ export default function ClientDashboardPage() {
             <Typography variant="h6" fontWeight={900} letterSpacing="-0.02em" color="#0f172a">
               Task for today
             </Typography>
-            <IconButton size="small" onClick={() => navigate("/projects")} sx={{ color: "#64748b" }}>
+            <IconButton size="small" onClick={() => navigate("/projects")} sx={{ color: "#64748b", borderRadius: "4px" }}>
               <TuneIcon fontSize="small" />
             </IconButton>
           </Box>
 
-          {/* List of Tasks */}
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 1.75 }}>
+          {/* List of Tasks - Square Edges */}
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
             {tasksForToday.map((task) => (
               <Box
                 key={task.id}
@@ -277,130 +277,126 @@ export default function ClientDashboardPage() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  p: 1.5,
-                  borderRadius: "14px",
+                  p: 1.75,
+                  borderRadius: "8px",
                   bgcolor: "#ffffff",
-                  border: "1px solid #f1f5f9",
+                  border: "1px solid #e2e8f0",
                   cursor: "pointer",
                   transition: "all 0.15s ease",
                   "&:hover": {
-                    bgcolor: "#f8fafc",
-                    borderColor: "#e2e8f0",
-                    transform: "translateX(2px)",
+                    borderColor: "#0f172a",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.04)",
                   },
                 }}
               >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1.75 }}>
                   <GeometricBadge type={task.badgeType} size={38} />
                   <Box>
-                    <Typography variant="subtitle2" fontWeight={800} color="#111827" sx={{ lineHeight: 1.25 }}>
+                    <Typography variant="body2" fontWeight={800} color="#0f172a" sx={{ lineHeight: 1.25 }}>
                       {task.title}
                     </Typography>
-                    <Typography variant="caption" color="#94a3b8" sx={{ fontSize: "0.75rem" }}>
+                    <Typography variant="caption" color="#64748b" sx={{ fontSize: "0.75rem", fontWeight: 600 }}>
                       {task.subtitle}
                     </Typography>
                   </Box>
                 </Box>
 
-                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, color: "#94a3b8" }}>
-                  <Typography variant="caption" fontWeight={700} sx={{ fontSize: "0.8rem", color: "#64748b" }}>
-                    🕒 {task.time}
-                  </Typography>
+                <Box
+                  sx={{
+                    px: 1.25,
+                    py: 0.5,
+                    bgcolor: "#f1f5f9",
+                    borderRadius: "4px",
+                    fontWeight: 800,
+                    fontSize: "0.75rem",
+                    color: "#0f172a",
+                    border: "1px solid #e2e8f0",
+                  }}
+                >
+                  {task.time}
                 </Box>
               </Box>
             ))}
           </Box>
         </Box>
 
-        {/* COLUMN 2: Widgets & Featured Article / Guidelines Card */}
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          {/* Header */}
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Typography variant="h6" fontWeight={900} letterSpacing="-0.02em" color="#0f172a">
-              Widgets
-            </Typography>
-            <IconButton size="small" onClick={() => navigate("/articles")} sx={{ color: "#64748b" }}>
-              <NorthEastIcon fontSize="small" />
-            </IconButton>
-          </Box>
+        {/* COLUMN 2: Widgets & Product Guidelines Card */}
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
+          <Typography variant="h6" fontWeight={900} letterSpacing="-0.02em" color="#0f172a">
+            Widgets
+          </Typography>
 
-          {/* Top 2 Mini Cards: Timer / Tracker + New Widget Action */}
+          {/* Mini Widgets Row */}
           <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
-            {/* Widget A: Sprint / Hours Tracker */}
+            {/* Widget A: Active Time Tracker */}
             <Card
               sx={{
-                bgcolor: "#ede9fe",
-                borderRadius: "18px",
+                bgcolor: "#ffffff",
+                borderRadius: "8px",
+                border: "1px solid #e2e8f0",
                 p: 2,
                 boxShadow: "none",
                 display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                minHeight: 120,
+                alignItems: "center",
+                gap: 1.5,
+                minHeight: 110,
               }}
             >
-              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="caption" fontWeight={700} color="#64748b" sx={{ fontSize: "0.72rem", textTransform: "uppercase" }}>
+                  Active Sprint
+                </Typography>
+                <Typography variant="h6" fontWeight={900} color="#0f172a" sx={{ my: 0.25, letterSpacing: "-0.02em" }}>
+                  01:35
+                </Typography>
                 <Box
                   onClick={() => setTimerRunning(!timerRunning)}
                   sx={{
-                    width: 26,
-                    height: 26,
-                    borderRadius: "50%",
-                    bgcolor: "#111827",
-                    color: "#ffffff",
-                    display: "flex",
+                    display: "inline-flex",
                     alignItems: "center",
-                    justifyContent: "center",
+                    gap: 0.5,
                     cursor: "pointer",
+                    color: timerRunning ? "#10b981" : "#64748b",
+                    fontSize: "0.72rem",
+                    fontWeight: 800,
                   }}
                 >
-                  {timerRunning ? <PauseIcon sx={{ fontSize: 14 }} /> : <PlayArrowIcon sx={{ fontSize: 14 }} />}
+                  {timerRunning ? <PauseIcon sx={{ fontSize: 13 }} /> : <PlayArrowIcon sx={{ fontSize: 13 }} />}
+                  {timerRunning ? "Tracking" : "Paused"}
                 </Box>
-                <Typography variant="caption" fontWeight={800} color="#111827">
-                  01:35
-                </Typography>
-                <ArrowUpwardIcon sx={{ fontSize: 14, color: "#111827" }} />
               </Box>
 
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mt: 1 }}>
-                {/* Mini Pie / Donut SVG Graphic */}
-                <Box
-                  component="svg"
-                  width="36"
-                  height="36"
-                  viewBox="0 0 36 36"
-                  sx={{ transform: "rotate(-90deg)" }}
-                >
-                  <circle cx="18" cy="18" r="14" fill="transparent" stroke="#ddd6fe" strokeWidth="5" />
-                  <circle
-                    cx="18"
-                    cy="18"
-                    r="14"
-                    fill="transparent"
-                    stroke="#111827"
+              {/* Donut progress */}
+              <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 0.5 }}>
+                <Box component="svg" width="38" height="38" viewBox="0 0 36 36">
+                  <path
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none"
+                    stroke="#e2e8f0"
+                    strokeWidth="5"
+                  />
+                  <path
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none"
+                    stroke="#0f172a"
                     strokeWidth="5"
                     strokeDasharray="88"
                     strokeDashoffset="54"
                     strokeLinecap="round"
                   />
                 </Box>
-                <Box>
-                  <Typography variant="body2" fontWeight={800} color="#111827" sx={{ lineHeight: 1 }}>
-                    2/7
-                  </Typography>
-                  <Typography variant="caption" color="#64748b" sx={{ fontSize: "0.6875rem" }}>
-                    hours
-                  </Typography>
-                </Box>
+                <Typography variant="caption" fontWeight={800} color="#0f172a" sx={{ fontSize: "0.68rem" }}>
+                  2/7 hrs
+                </Typography>
               </Box>
             </Card>
 
-            {/* Widget B: New Widget / Quick Action Dashed Card */}
+            {/* Widget B: Quick Billing & Invoices */}
             <Card
               onClick={() => navigate("/invoices")}
               sx={{
-                bgcolor: "#f1f5f9",
-                borderRadius: "18px",
+                bgcolor: "#f8fafc",
+                borderRadius: "8px",
                 border: "1.5px dashed #cbd5e1",
                 p: 2,
                 boxShadow: "none",
@@ -410,73 +406,70 @@ export default function ClientDashboardPage() {
                 justifyContent: "center",
                 gap: 1,
                 cursor: "pointer",
-                minHeight: 120,
+                minHeight: 110,
                 transition: "all 0.15s ease",
                 "&:hover": {
-                  bgcolor: "#e2e8f0",
+                  bgcolor: "#f1f5f9",
+                  borderColor: "#0f172a",
                 },
               }}
             >
               <Box
                 sx={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: "50%",
-                  bgcolor: "#111827",
+                  width: 30,
+                  height: 30,
+                  borderRadius: "4px",
+                  bgcolor: "#0f172a",
                   color: "#ffffff",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <AddIcon sx={{ fontSize: 18 }} />
+                <AddIcon sx={{ fontSize: 16 }} />
               </Box>
-              <Typography variant="caption" fontWeight={700} color="#111827">
-                Billing & Pay
+              <Typography variant="caption" fontWeight={800} color="#0f172a">
+                Invoices & Pay
               </Typography>
             </Card>
           </Box>
 
-          {/* Bottom Featured Banner: Dark Card with 3D Isometric Illustration */}
+          {/* Bottom Featured Banner: Opens External Blog Directly! */}
           <Card
-            onClick={() => navigate("/articles")}
+            onClick={() => window.open("https://webliix.in/blog", "_blank", "noopener,noreferrer")}
             sx={{
-              bgcolor: "#000000",
+              bgcolor: "#0f172a",
               color: "#ffffff",
-              borderRadius: "20px",
+              borderRadius: "8px",
               p: 2.75,
               cursor: "pointer",
               position: "relative",
               overflow: "hidden",
-              minHeight: 175,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
+              border: "1px solid #1e293b",
+              boxShadow: "0 4px 16px rgba(15,23,42,0.15)",
               transition: "transform 0.2s ease",
               "&:hover": {
-                transform: "translateY(-2px)",
+                transform: "translateY(-3px)",
               },
             }}
           >
-            {/* 3D Isometric Geometric Illustration Background */}
+            {/* 3D Isometric SVG Illustration */}
             <Box
               sx={{
                 position: "absolute",
-                right: -20,
-                top: -10,
-                width: 200,
-                height: 180,
+                right: -10,
+                top: -15,
+                width: 170,
+                height: 150,
                 pointerEvents: "none",
-                opacity: 0.95,
               }}
             >
               <IsometricCubeIllustration width="100%" height="100%" />
             </Box>
 
-            <Box sx={{ position: "relative", zIndex: 2, maxWidth: 170 }}>
+            <Box sx={{ position: "relative", zIndex: 2, maxWidth: 190 }}>
               <Typography
-                variant="h6"
+                variant="subtitle1"
                 fontWeight={900}
                 letterSpacing="-0.02em"
                 sx={{ color: "#ffffff", lineHeight: 1.25, mb: 0.5 }}
@@ -486,10 +479,10 @@ export default function ClientDashboardPage() {
             </Box>
 
             <Box sx={{ position: "relative", zIndex: 2, display: "flex", alignItems: "center", gap: 0.75, mt: 3 }}>
-              <Typography variant="caption" fontWeight={800} sx={{ color: "#f8fafc", fontSize: "0.8125rem" }}>
-                Find out more
+              <Typography variant="caption" fontWeight={800} sx={{ color: "#f8fafc", fontSize: "0.82rem" }}>
+                Read on webliix.in
               </Typography>
-              <ArrowForwardIcon sx={{ fontSize: 14, color: "#f8fafc" }} />
+              <OpenInNewIcon sx={{ fontSize: 13, color: "#f8fafc" }} />
             </Box>
           </Card>
         </Box>
@@ -501,7 +494,7 @@ export default function ClientDashboardPage() {
             <Typography variant="h6" fontWeight={900} letterSpacing="-0.02em" color="#0f172a">
               Calendar
             </Typography>
-            <IconButton size="small" sx={{ color: "#111827" }}>
+            <IconButton size="small" sx={{ color: "#0f172a", borderRadius: "4px" }}>
               <CalendarMonthIcon fontSize="small" />
             </IconButton>
           </Box>
@@ -511,12 +504,12 @@ export default function ClientDashboardPage() {
             {calendarTimeline.map((group, gIdx) => (
               <Box key={gIdx}>
                 {/* Date Header */}
-                <Typography variant="caption" fontWeight={700} color="#94a3b8" sx={{ fontSize: "0.8rem", mb: 1.5, display: "block" }}>
+                <Typography variant="caption" fontWeight={800} color="#64748b" sx={{ fontSize: "0.8rem", mb: 1, display: "block" }}>
                   {group.groupDate}
                 </Typography>
 
-                {/* Timeline Events */}
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 1.75 }}>
+                {/* Timeline Events - Square Edges */}
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
                   {group.events.map((evt, eIdx) => (
                     <Box
                       key={eIdx}
@@ -524,31 +517,33 @@ export default function ClientDashboardPage() {
                         display: "flex",
                         alignItems: "center",
                         gap: 2,
-                        p: 1.25,
-                        borderRadius: "12px",
-                        transition: "background-color 0.15s ease",
-                        "&:hover": { bgcolor: "#ffffff" },
+                        p: 1.5,
+                        borderRadius: "6px",
+                        bgcolor: "#ffffff",
+                        border: "1px solid #e2e8f0",
+                        transition: "all 0.15s ease",
+                        "&:hover": { borderColor: "#0f172a" },
                       }}
                     >
                       {/* Time Column */}
                       <Typography
                         variant="body2"
-                        fontWeight={800}
-                        color="#111827"
-                        sx={{ width: 50, fontSize: "0.875rem", fontFamily: "monospace" }}
+                        fontWeight={900}
+                        color="#0f172a"
+                        sx={{ width: 48, fontSize: "0.85rem", fontFamily: "monospace" }}
                       >
                         {evt.time}
                       </Typography>
 
                       {/* Black Vertical Separator Line */}
-                      <Box sx={{ width: 2.5, height: 26, bgcolor: "#111827", borderRadius: 1 }} />
+                      <Box sx={{ width: 2.5, height: 26, bgcolor: "#0f172a", borderRadius: "1px" }} />
 
                       {/* Content */}
                       <Box>
-                        <Typography variant="body2" fontWeight={800} color="#111827" sx={{ lineHeight: 1.25 }}>
+                        <Typography variant="body2" fontWeight={800} color="#0f172a" sx={{ lineHeight: 1.25 }}>
                           {evt.title}
                         </Typography>
-                        <Typography variant="caption" color="#94a3b8" sx={{ fontSize: "0.75rem" }}>
+                        <Typography variant="caption" color="#64748b" sx={{ fontSize: "0.75rem", fontWeight: 600 }}>
                           {evt.subtitle}
                         </Typography>
                       </Box>
@@ -567,7 +562,7 @@ export default function ClientDashboardPage() {
         open={Boolean(menuAnchor.el)}
         onClose={() => setMenuAnchor({ el: null, projectId: null })}
         PaperProps={{
-          sx: { borderRadius: "12px", boxShadow: tokens.shadows.md, border: "1px solid #e2e8f0" },
+          sx: { borderRadius: "6px", boxShadow: tokens.shadows.md, border: "1px solid #e2e8f0" },
         }}
       >
         <MenuItem
@@ -576,7 +571,7 @@ export default function ClientDashboardPage() {
             setMenuAnchor({ el: null, projectId: null });
             if (pid) navigate(`/projects/${pid}`);
           }}
-          sx={{ fontSize: "0.875rem", fontWeight: 700 }}
+          sx={{ fontSize: "0.85rem", fontWeight: 700 }}
         >
           View Project Details
         </MenuItem>
@@ -585,7 +580,7 @@ export default function ClientDashboardPage() {
             setMenuAnchor({ el: null, projectId: null });
             navigate("/tickets");
           }}
-          sx={{ fontSize: "0.875rem", fontWeight: 700 }}
+          sx={{ fontSize: "0.85rem", fontWeight: 700 }}
         >
           Open Support Inquiry
         </MenuItem>

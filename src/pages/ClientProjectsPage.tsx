@@ -6,19 +6,15 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Chip from "@mui/material/Chip";
 import LinearProgress from "@mui/material/LinearProgress";
-import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import SearchIcon from "@mui/icons-material/Search";
-import AddIcon from "@mui/icons-material/Add";
 import FolderSpecialOutlinedIcon from "@mui/icons-material/FolderSpecialOutlined";
-import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import AssignmentTurnedInOutlinedIcon from "@mui/icons-material/AssignmentTurnedInOutlined";
 
 import { tokens } from "../theme/tokens";
 import { projectApi, type ClientProject } from "../services/projectApi";
-import { BrandLoader } from "../components/common/BrandLoader";
 import { ClientCardSkeleton, ClientFadeWebliixLoader } from "../components/common/ClientSkeleton";
 import { GeometricBadge } from "../components/common/PortalIllustrations";
 
@@ -111,9 +107,9 @@ export default function ClientProjectsPage() {
               ),
             }}
             sx={{
-              minWidth: { xs: "100%", sm: 220 },
+              minWidth: { xs: "100%", sm: 240 },
               "& .MuiOutlinedInput-root": {
-                borderRadius: tokens.borderRadius.full,
+                borderRadius: `${tokens.borderRadius.md}px`,
                 bgcolor: "#fff",
               },
             }}
@@ -121,7 +117,7 @@ export default function ClientProjectsPage() {
         </Box>
       </Box>
 
-      {/* Filter Tabs */}
+      {/* Filter Tabs - Crisp Square Badges */}
       <Box sx={{ display: "flex", gap: 1, mb: 3.5, flexWrap: "wrap" }}>
         {[
           { key: "ALL", label: `All Projects (${projects.length})` },
@@ -136,9 +132,9 @@ export default function ClientProjectsPage() {
             sx={{
               fontWeight: 800,
               fontSize: "0.8rem",
-              borderRadius: tokens.borderRadius.full,
+              borderRadius: "6px",
               px: 1,
-              py: 2.2,
+              py: 2,
               bgcolor: statusFilter === tab.key ? "#0f172a" : "#fff",
               color: statusFilter === tab.key ? "#fff" : tokens.colors.secondary[700],
               border: `1px solid ${statusFilter === tab.key ? "#0f172a" : tokens.colors.secondary[200]}`,
@@ -160,7 +156,7 @@ export default function ClientProjectsPage() {
           </Box>
         </Box>
       ) : filteredProjects.length === 0 ? (
-        <Card sx={{ p: 6, textAlign: "center", borderRadius: tokens.borderRadius.xl, border: `1px solid ${tokens.colors.secondary[200]}`, bgcolor: "#fff" }}>
+        <Card sx={{ p: 6, textAlign: "center", borderRadius: `${tokens.borderRadius.lg}px`, border: `1px solid ${tokens.colors.secondary[200]}`, bgcolor: "#fff" }}>
           <FolderSpecialOutlinedIcon sx={{ fontSize: 56, color: tokens.colors.secondary[300], mb: 2 }} />
           <Typography variant="h6" fontWeight={800} color={tokens.colors.secondary[800]} gutterBottom>
             No Projects Found
@@ -182,18 +178,18 @@ export default function ClientProjectsPage() {
                 onClick={() => navigate(`/projects/${proj.id}`)}
                 sx={{
                   bgcolor: theme.bg,
-                  borderRadius: "28px",
+                  borderRadius: "8px",
                   border: `1.5px solid ${theme.border}`,
                   p: 3,
                   cursor: "pointer",
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "space-between",
-                  boxShadow: "0 10px 30px -10px rgba(0,0,0,0.04)",
-                  transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
+                  boxShadow: "0 4px 16px -4px rgba(0,0,0,0.04)",
+                  transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
                   "&:hover": {
-                    transform: "translateY(-4px)",
-                    boxShadow: "0 20px 35px -10px rgba(0,0,0,0.09)",
+                    transform: "translateY(-3px)",
+                    boxShadow: "0 12px 24px -6px rgba(0,0,0,0.08)",
                     borderColor: "#0f172a",
                   },
                 }}
@@ -201,7 +197,7 @@ export default function ClientProjectsPage() {
                 <CardContent sx={{ p: 0, "&:last-child": { pb: 0 }, display: "flex", flexDirection: "column", height: "100%" }}>
                   {/* Top Bar: Geometric Icon & Code */}
                   <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 2.5 }}>
-                    <GeometricBadge type={theme.badgeShape} size={44} />
+                    <GeometricBadge type={theme.badgeShape} size={42} />
                     <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
                       <Chip
                         label={proj.projectCode || `PRJ-${proj.id}`}
@@ -209,9 +205,10 @@ export default function ClientProjectsPage() {
                         sx={{
                           fontWeight: 800,
                           fontSize: "0.72rem",
-                          bgcolor: "rgba(255,255,255,0.85)",
+                          borderRadius: "4px",
+                          bgcolor: "rgba(255,255,255,0.9)",
                           color: "#0f172a",
-                          border: "1px solid rgba(0,0,0,0.06)",
+                          border: "1px solid rgba(0,0,0,0.08)",
                         }}
                       />
                       <Chip
@@ -220,6 +217,7 @@ export default function ClientProjectsPage() {
                         sx={{
                           fontWeight: 800,
                           fontSize: "0.72rem",
+                          borderRadius: "4px",
                           bgcolor: isCompleted ? "#0f172a" : "rgba(255,255,255,0.9)",
                           color: isCompleted ? "#fff" : "#0f172a",
                         }}
@@ -248,7 +246,7 @@ export default function ClientProjectsPage() {
                   </Typography>
 
                   {/* Progress Stats */}
-                  <Box sx={{ mb: 2.5, bgcolor: "rgba(255,255,255,0.7)", p: 2, borderRadius: "20px", border: "1px solid rgba(0,0,0,0.04)" }}>
+                  <Box sx={{ mb: 2.5, bgcolor: "rgba(255,255,255,0.75)", p: 2, borderRadius: "6px", border: "1px solid rgba(0,0,0,0.06)" }}>
                     <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
                       <Typography variant="caption" fontWeight={800} color="#0f172a">
                         Delivery Phase
@@ -262,9 +260,9 @@ export default function ClientProjectsPage() {
                       value={progress}
                       sx={{
                         height: 7,
-                        borderRadius: 4,
+                        borderRadius: 2,
                         bgcolor: "rgba(0,0,0,0.08)",
-                        "& .MuiLinearProgress-bar": { bgcolor: "#0f172a", borderRadius: 4 },
+                        "& .MuiLinearProgress-bar": { bgcolor: "#0f172a", borderRadius: 2 },
                       }}
                     />
                   </Box>
@@ -277,16 +275,16 @@ export default function ClientProjectsPage() {
                     </Typography>
                     <Box
                       sx={{
-                        width: 34,
-                        height: 34,
-                        borderRadius: "50%",
+                        width: 32,
+                        height: 32,
+                        borderRadius: "6px",
                         bgcolor: "#0f172a",
                         color: "#fff",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        transition: "transform 0.2s ease",
-                        "&:hover": { transform: "translateX(3px)" },
+                        transition: "all 0.15s ease",
+                        "&:hover": { bgcolor: "#334155", transform: "translateX(2px)" },
                       }}
                     >
                       <ArrowForwardIcon sx={{ fontSize: 16 }} />

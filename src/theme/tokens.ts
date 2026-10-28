@@ -87,12 +87,12 @@ export const tokens = {
     },
   },
   borderRadius: {
-    xs: 4,
-    sm: 8,
-    md: 12,
-    lg: 16,
-    xl: 24,
-    full: 9999,
+    xs: 2,
+    sm: 4,
+    md: 6,
+    lg: 8,
+    xl: 10,
+    full: 6, // Square aesthetic with crisp modern corners
   },
   shadows: {
     card: "0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05)",

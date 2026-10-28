@@ -159,7 +159,7 @@ export default function ClientNotificationsPage() {
             startIcon={<DoneAllIcon />}
             onClick={handleMarkAllRead}
             disabled={unreadCount === 0}
-            sx={{ borderRadius: "9999px", fontWeight: 700, textTransform: "none" }}
+            sx={{ borderRadius: "6px", fontWeight: 700, textTransform: "none" }}
           >
             Mark all read
           </Button>
@@ -169,7 +169,7 @@ export default function ClientNotificationsPage() {
             startIcon={<DeleteOutlineIcon />}
             onClick={handleClearAll}
             disabled={notifications.length === 0}
-            sx={{ borderRadius: "9999px", fontWeight: 700, textTransform: "none" }}
+            sx={{ borderRadius: "6px", fontWeight: 700, textTransform: "none" }}
           >
             Clear all
           </Button>
@@ -196,7 +196,7 @@ export default function ClientNotificationsPage() {
       {/* Notifications List */}
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {filtered.length === 0 ? (
-          <Card sx={{ p: 8, textAlign: "center", borderRadius: "18px", border: "1px solid #e2e8f0" }}>
+          <Card sx={{ p: 8, textAlign: "center", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
             <NotificationsNoneOutlinedIcon sx={{ fontSize: 56, color: "#cbd5e1", mb: 2 }} />
             <Typography variant="h6" fontWeight={800} color="#64748b" gutterBottom>
               No notifications found
@@ -213,7 +213,7 @@ export default function ClientNotificationsPage() {
                 key={item.id}
                 onClick={() => handleItemClick(item)}
                 sx={{
-                  borderRadius: "16px",
+                  borderRadius: "8px",
                   border: "1px solid",
                   borderColor: isUnread ? "#cbd5e1" : "#f1f5f9",
                   bgcolor: isUnread ? "#ffffff" : "#f8fafc",
@@ -228,7 +228,7 @@ export default function ClientNotificationsPage() {
               >
                 <CardContent sx={{ p: 2.5, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 2 }}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 2, minWidth: 260, flex: 1 }}>
-                    <Avatar sx={{ width: 44, height: 44, bgcolor: "#ffffff", border: "1px solid #e2e8f0" }}>
+                    <Avatar sx={{ width: 44, height: 44, borderRadius: "6px", bgcolor: "#ffffff", border: "1px solid #e2e8f0" }}>
                       {getIconForType(item.referenceType)}
                     </Avatar>
                     <Box>
@@ -237,7 +237,7 @@ export default function ClientNotificationsPage() {
                           {item.title}
                         </Typography>
                         {isUnread && (
-                          <Chip label="NEW" size="small" color="primary" sx={{ height: 18, fontSize: "0.625rem", fontWeight: 800 }} />
+                          <Chip label="NEW" size="small" color="primary" sx={{ height: 18, fontSize: "0.625rem", fontWeight: 800, borderRadius: "4px" }} />
                         )}
                       </Box>
                       <Typography variant="body2" color="#64748b" sx={{ maxWidth: 700, lineHeight: 1.4 }}>

@@ -98,4 +98,22 @@ export const ticketApi = {
       return null;
     }
   },
+
+  async resolveTicket(ticketId: number | string): Promise<boolean> {
+    try {
+      if (typeof ticketId === "string" && isNaN(Number(ticketId))) {
+        await http.post(`/api/v1/public/tickets/${ticketId}/resolve`);
+      } else {
+        await http.put(`/api/v1/tickets/${ticketId}/resolve`);
+      }
+      return true;
+    } catch {
+      try {
+        await http.put(`/api/v1/tickets/${ticketId}`, { status: "RESOLVED" });
+        return true;
+      } catch {
+        return false;
+      }
+    }
+  },
 };

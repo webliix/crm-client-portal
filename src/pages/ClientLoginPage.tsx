@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
@@ -18,7 +17,6 @@ import Chip from "@mui/material/Chip";
 // Icons
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
-import KeyOutlinedIcon from "@mui/icons-material/KeyOutlined";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 import { tokens } from "../theme/tokens";
@@ -134,14 +132,14 @@ export default function ClientLoginPage() {
         p: { xs: 2, sm: 3 },
       }}
     >
-      {/* Central Login Card */}
+      {/* Central Login Card - Crisp Square Shape */}
       <Card
         sx={{
           width: "100%",
           maxWidth: 960,
-          borderRadius: "24px",
+          borderRadius: "8px",
           border: "1px solid #e2e8f0",
-          boxShadow: "0 20px 40px -8px rgba(0,0,0,0.06)",
+          boxShadow: "0 12px 32px -8px rgba(0,0,0,0.08)",
           display: "grid",
           gridTemplateColumns: { xs: "1fr", md: "1.1fr 1fr" },
           overflow: "hidden",
@@ -149,22 +147,19 @@ export default function ClientLoginPage() {
         }}
       >
         {/* Left Side: Login Form */}
-        <Box sx={{ p: { xs: 3, sm: 5 }, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          {/* Brand Logo & Title */}
-          <Box sx={{ mb: 3, display: "flex", alignItems: "center", gap: 1.5 }}>
+        <Box sx={{ p: { xs: 3.5, sm: 5 }, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          {/* Brand Logo - Enlarged Logo, "Webliix" Text Removed */}
+          <Box sx={{ mb: 3.5, display: "flex", alignItems: "center", gap: 1.5 }}>
             <Box
               component="img"
               src="https://res.cloudinary.com/vhth8clt/image/upload/v1788210409/logo.png"
-              alt="Webliix"
-              sx={{ height: 32, objectFit: "contain" }}
+              alt="Client Portal"
+              sx={{ height: 44, maxWidth: 180, objectFit: "contain" }}
             />
-            <Typography variant="h6" fontWeight={900} letterSpacing="-0.03em" fontStyle="italic" color="#111827">
-              Webliix
-            </Typography>
             <Chip
-              label="Client Hub"
+              label="Client Workspace"
               size="small"
-              sx={{ bgcolor: "#f1f5f9", fontWeight: 800, fontSize: "0.6875rem", height: 20 }}
+              sx={{ bgcolor: "#f1f5f9", fontWeight: 800, fontSize: "0.6875rem", height: 22, borderRadius: "4px" }}
             />
           </Box>
 
@@ -176,7 +171,7 @@ export default function ClientLoginPage() {
           </Typography>
 
           {error && (
-            <Alert severity="error" sx={{ mb: 2.5, borderRadius: "12px", fontSize: "0.8125rem" }}>
+            <Alert severity="error" sx={{ mb: 2.5, borderRadius: "6px", fontSize: "0.8125rem" }}>
               {error}
             </Alert>
           )}
@@ -200,7 +195,7 @@ export default function ClientLoginPage() {
               }}
               sx={{
                 "& .MuiOutlinedInput-root": {
-                  borderRadius: "14px",
+                  borderRadius: "6px",
                 },
               }}
             />
@@ -221,7 +216,7 @@ export default function ClientLoginPage() {
               }}
               sx={{
                 "& .MuiOutlinedInput-root": {
-                  borderRadius: "14px",
+                  borderRadius: "6px",
                 },
               }}
             />
@@ -258,12 +253,12 @@ export default function ClientLoginPage() {
                 py: 1.35,
                 fontWeight: 800,
                 fontSize: "0.9375rem",
-                borderRadius: "9999px",
+                borderRadius: "6px",
                 textTransform: "none",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
                 "&:hover": {
                   bgcolor: "#1e293b",
-                  boxShadow: "0 6px 16px rgba(0,0,0,0.25)",
+                  boxShadow: "0 6px 16px rgba(0,0,0,0.2)",
                 },
               }}
             >
@@ -272,7 +267,7 @@ export default function ClientLoginPage() {
           </Box>
         </Box>
 
-        {/* Right Side: Showcase Banner with 3D Illustration & Pastel Accents */}
+        {/* Right Side: Showcase Banner with 3D Illustration & Geometric Badges */}
         <Box
           sx={{
             display: { xs: "none", md: "flex" },
@@ -320,11 +315,19 @@ export default function ClientLoginPage() {
       </Card>
 
       {/* Forgot Password Dialog */}
-      <Dialog open={forgotModalOpen} onClose={() => setForgotModalOpen(false)} maxWidth="xs" fullWidth>
+      <Dialog
+        open={forgotModalOpen}
+        onClose={() => setForgotModalOpen(false)}
+        maxWidth="xs"
+        fullWidth
+        PaperProps={{
+          sx: { borderRadius: "8px" },
+        }}
+      >
         <DialogTitle sx={{ fontWeight: 800, pb: 1 }}>Reset Password</DialogTitle>
         <DialogContent dividers>
           {resetMsg && (
-            <Alert severity={resetMsg.type} sx={{ mb: 2, borderRadius: "10px", fontSize: "0.8125rem" }}>
+            <Alert severity={resetMsg.type} sx={{ mb: 2, borderRadius: "6px", fontSize: "0.8125rem" }}>
               {resetMsg.text}
             </Alert>
           )}
@@ -342,12 +345,24 @@ export default function ClientLoginPage() {
                 value={resetEmail}
                 onChange={(e) => setResetEmail(e.target.value)}
                 placeholder="name@company.com"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "6px",
+                  },
+                }}
               />
               <Button
                 type="submit"
                 variant="contained"
                 disabled={resetLoading || !resetEmail.trim()}
-                sx={{ bgcolor: "#000000", "&:hover": { bgcolor: "#1e293b" }, fontWeight: 700, borderRadius: "9999px", py: 1 }}
+                sx={{
+                  bgcolor: "#000000",
+                  "&:hover": { bgcolor: "#1e293b" },
+                  fontWeight: 700,
+                  borderRadius: "6px",
+                  py: 1,
+                  textTransform: "none",
+                }}
               >
                 {resetLoading ? <CircularProgress size={20} color="inherit" /> : "Send Verification Code"}
               </Button>
@@ -361,6 +376,11 @@ export default function ClientLoginPage() {
                 value={otpCode}
                 onChange={(e) => setOtpCode(e.target.value)}
                 placeholder="123456"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "6px",
+                  },
+                }}
               />
               <TextField
                 label="New Password"
@@ -370,12 +390,24 @@ export default function ClientLoginPage() {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="At least 6 characters"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "6px",
+                  },
+                }}
               />
               <Button
                 type="submit"
                 variant="contained"
                 disabled={resetLoading || !otpCode.trim() || !newPassword}
-                sx={{ bgcolor: "#000000", "&:hover": { bgcolor: "#1e293b" }, fontWeight: 700, borderRadius: "9999px", py: 1 }}
+                sx={{
+                  bgcolor: "#000000",
+                  "&:hover": { bgcolor: "#1e293b" },
+                  fontWeight: 700,
+                  borderRadius: "6px",
+                  py: 1,
+                  textTransform: "none",
+                }}
               >
                 {resetLoading ? <CircularProgress size={20} color="inherit" /> : "Verify & Set New Password"}
               </Button>
@@ -383,7 +415,9 @@ export default function ClientLoginPage() {
           )}
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
-          <Button onClick={() => setForgotModalOpen(false)}>Close</Button>
+          <Button onClick={() => setForgotModalOpen(false)} sx={{ borderRadius: "6px", textTransform: "none" }}>
+            Close
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>

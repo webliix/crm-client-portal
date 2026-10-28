@@ -307,10 +307,10 @@ export default function ClientProjectDetailPage() {
               variant="determinate"
               value={project.progressPercentage ?? 0}
               sx={{
-                height: 10,
-                borderRadius: 5,
+                height: 8,
+                borderRadius: 2,
                 bgcolor: tokens.colors.secondary[100],
-                "& .MuiLinearProgress-bar": { borderRadius: 5, bgcolor: tokens.colors.primary.main },
+                "& .MuiLinearProgress-bar": { borderRadius: 2, bgcolor: tokens.colors.primary.main },
               }}
             />
           </Box>
