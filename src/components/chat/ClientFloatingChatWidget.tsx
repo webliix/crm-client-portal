@@ -59,12 +59,12 @@ export function ClientFloatingChatWidget() {
     scrollToBottom();
   }, [messages, isOpen]);
 
-  // Load user tickets on mount
+  // Load user tickets only when chat is opened
   const loadUserTickets = async () => {
     try {
       const tickets = await ticketApi.getMyTickets();
       setExistingTickets(tickets);
-      // Auto-select latest open ticket if available
+      // Auto-select latest open ticket if available and none selected
       const openTicket = tickets.find((t) => t.status === "OPEN" || t.status === "IN_PROGRESS" || t.status === "REOPENED");
       if (openTicket && !activeTicket) {
         setActiveTicket(openTicket);
@@ -75,23 +75,17 @@ export function ClientFloatingChatWidget() {
   };
 
   useEffect(() => {
-    if (user) {
+    if (isOpen && user) {
       loadUserTickets();
     }
   }, [isOpen]);
 
-  // Fetch comments for active ticket
+  // Fetch comments for active ticket (lightweight - only comments, no redundant getTicket)
   const fetchComments = async (ticketId: number, silent = false) => {
     if (!silent) setLoadingMessages(true);
     try {
       const data = await ticketApi.getComments(ticketId);
       setMessages(data || []);
-
-      // Also refresh ticket status and assigned staff
-      const updatedTicket = await ticketApi.getTicket(ticketId);
-      if (updatedTicket) {
-        setActiveTicket(updatedTicket);
-      }
     } catch (err) {
       console.error("Failed to load ticket comments", err);
     } finally {
@@ -99,18 +93,20 @@ export function ClientFloatingChatWidget() {
     }
   };
 
-  // Setup WebSocket / polling for active ticket
+  // Setup WebSocket / polling for active ticket ONLY while chat window is actively open
   useEffect(() => {
-    if (!activeTicket) return;
+    if (!isOpen || !activeTicket) return;
 
     fetchComments(activeTicket.id);
 
-    // Fallback polling every 3 seconds for guaranteed live sync
+    // Infrequent fallback polling (20s) only if user is actively viewing the tab
     const interval = setInterval(() => {
-      fetchComments(activeTicket.id, true);
-    }, 3000);
+      if (!document.hidden && isOpen) {
+        fetchComments(activeTicket.id, true);
+      }
+    }, 20000);
 
-    // Try connecting to WebSocket
+    // Try connecting to WebSocket for live push events while open
     try {
       const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
       const host = window.location.host;
@@ -129,7 +125,7 @@ export function ClientFloatingChatWidget() {
       };
 
       ws.onerror = () => {
-        // Fallback polling continues
+        // Fallback polling handles updates
       };
     } catch {
       // ignore WS connection errors in environments where ws is disabled
@@ -142,7 +138,7 @@ export function ClientFloatingChatWidget() {
         wsRef.current = null;
       }
     };
-  }, [activeTicket?.id]);
+  }, [isOpen, activeTicket?.id]);
 
   // Handle starting a new live chat inquiry
   const handleStartInquiry = async (e: React.FormEvent) => {

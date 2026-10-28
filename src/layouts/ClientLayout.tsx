@@ -58,7 +58,7 @@ export function ClientLayout({ children }: ClientLayoutProps) {
   const [inquiryDetails, setInquiryDetails] = useState("");
   const [submittingInquiry, setSubmittingInquiry] = useState(false);
 
-  useEffect(() => {
+  const loadNotifications = () => {
     notificationApi
       .getMyNotifications()
       .then((list) => {
@@ -66,7 +66,11 @@ export function ClientLayout({ children }: ClientLayoutProps) {
         setUnreadCount(unread);
       })
       .catch(() => {});
-  }, [location.pathname]);
+  };
+
+  useEffect(() => {
+    loadNotifications();
+  }, []);
 
   const handleLogout = () => {
     authService.logout();
