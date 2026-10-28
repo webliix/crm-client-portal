@@ -60,24 +60,6 @@ export default function ClientLiveChatPage() {
   useEffect(() => {
     if (!selectedProjectId) return;
     fetchMessages(selectedProjectId);
-
-    // Live polling every 15 seconds when active
-    const interval = setInterval(() => {
-      if (document.hidden) return;
-      fetchMessages(selectedProjectId, true);
-    }, 15000);
-
-    const onVisibilityChange = () => {
-      if (!document.hidden) {
-        fetchMessages(selectedProjectId, true);
-      }
-    };
-    document.addEventListener("visibilitychange", onVisibilityChange);
-
-    return () => {
-      clearInterval(interval);
-      document.removeEventListener("visibilitychange", onVisibilityChange);
-    };
   }, [selectedProjectId]);
 
   // Scroll to bottom on message change

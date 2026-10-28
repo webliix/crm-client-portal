@@ -93,51 +93,10 @@ export function ClientFloatingChatWidget() {
     }
   };
 
-  // Setup WebSocket / polling for active ticket ONLY while chat window is actively open
+  // Fetch comments for active ticket ONLY when user opens it or switches tickets (no automated polling loops)
   useEffect(() => {
     if (!isOpen || !activeTicket) return;
-
     fetchComments(activeTicket.id);
-
-    // Infrequent fallback polling (20s) only if user is actively viewing the tab
-    const interval = setInterval(() => {
-      if (!document.hidden && isOpen) {
-        fetchComments(activeTicket.id, true);
-      }
-    }, 20000);
-
-    // Try connecting to WebSocket for live push events while open
-    try {
-      const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-      const host = window.location.host;
-      const wsUrl = `${protocol}//${host}/ws/websocket`;
-      const ws = new WebSocket(wsUrl);
-      wsRef.current = ws;
-
-      ws.onmessage = (event) => {
-        try {
-          if (event.data && event.data.includes("topic/tickets")) {
-            fetchComments(activeTicket.id, true);
-          }
-        } catch {
-          // ignore parsing error
-        }
-      };
-
-      ws.onerror = () => {
-        // Fallback polling handles updates
-      };
-    } catch {
-      // ignore WS connection errors in environments where ws is disabled
-    }
-
-    return () => {
-      clearInterval(interval);
-      if (wsRef.current) {
-        wsRef.current.close();
-        wsRef.current = null;
-      }
-    };
   }, [isOpen, activeTicket?.id]);
 
   // Handle starting a new live chat inquiry
