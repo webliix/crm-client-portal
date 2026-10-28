@@ -9,6 +9,7 @@ export interface ClientTicket {
   description: string;
   status: string;
   priority: string;
+  category?: string;
   assignedToName?: string;
   assignedToId?: number;
   createdAt: string;
@@ -35,13 +36,13 @@ export const ticketApi = {
     }
   },
 
-  async createTicket(title: string, description: string): Promise<ClientTicket | null> {
+  async createTicket(title: string, description: string, category: string = "SUPPORT"): Promise<ClientTicket | null> {
     try {
       const res = await http.post("/api/v1/tickets", {
         title,
         description,
         priority: "MEDIUM",
-        category: "SUPPORT",
+        category,
       });
       return res.data?.data ?? null;
     } catch (primaryErr: any) {
@@ -55,7 +56,7 @@ export const ticketApi = {
             phone: currentUser.phone || "",
             title,
             description,
-            category: "SUPPORT",
+            category,
           });
           return pubRes.data?.data ?? null;
         } catch (fallbackErr: any) {

@@ -1,4 +1,4 @@
-// Enhanced enterprise tokens for Webliix Client Portal
+// Enhanced enterprise & modern dashboard tokens for Webliix Client Portal
 export const tokens = {
   colors: {
     primary: {
@@ -12,9 +12,10 @@ export const tokens = {
       700: "#4338ca",
       800: "#3730a3",
       900: "#312e81",
-      main: "#6366f1",
-      gradient: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)",
-      glow: "rgba(99, 102, 241, 0.28)",
+      main: "#111827", // Modern high-contrast dark primary
+      brand: "#6366f1",
+      gradient: "linear-gradient(135deg, #111827 0%, #1f2937 100%)",
+      glow: "rgba(17, 24, 39, 0.15)",
     },
     secondary: {
       50: "#f8fafc",
@@ -29,6 +30,37 @@ export const tokens = {
       900: "#0f172a",
       950: "#090d16",
       main: "#475569",
+    },
+    // Modern reference-style pastel card palette
+    pastel: {
+      mint: {
+        bg: "#dcfce7",
+        text: "#15803d",
+        title: "#0f172a",
+        bar: "#111827",
+        border: "#bbf7d0",
+      },
+      lilac: {
+        bg: "#ede9fe",
+        text: "#6d28d9",
+        title: "#0f172a",
+        bar: "#111827",
+        border: "#ddd6fe",
+      },
+      blush: {
+        bg: "#ffe4e6",
+        text: "#be123c",
+        title: "#0f172a",
+        bar: "#111827",
+        border: "#fecdd3",
+      },
+      sky: {
+        bg: "#e0f2fe",
+        text: "#0369a1",
+        title: "#0f172a",
+        bar: "#111827",
+        border: "#bae6fd",
+      },
     },
     success: {
       50: "#ecfdf5",
@@ -59,14 +91,16 @@ export const tokens = {
     sm: 8,
     md: 12,
     lg: 16,
-    xl: 20,
+    xl: 24,
     full: 9999,
   },
   shadows: {
-    sm: "0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px 0 rgba(0, 0, 0, 0.04)",
-    md: "0 4px 14px -2px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04)",
-    lg: "0 10px 25px -3px rgba(15, 23, 42, 0.10), 0 4px 10px -2px rgba(15, 23, 42, 0.04)",
-    xl: "0 20px 40px -6px rgba(15, 23, 42, 0.14), 0 8px 16px -4px rgba(15, 23, 42, 0.06)",
-    glow: "0 0 24px -2px rgba(99, 102, 241, 0.35)",
+    card: "0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05)",
+    hover: "0 10px 25px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04)",
+    floating: "0 20px 40px -4px rgba(0, 0, 0, 0.12)",
+    sm: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+    md: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+    lg: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+    xl: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
   },
 };

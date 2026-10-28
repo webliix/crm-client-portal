@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -20,12 +21,14 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import PersonIcon from "@mui/icons-material/Person";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 
 import { tokens } from "../../theme/tokens";
 import { authService } from "../../services/authService";
 import { ticketApi, type ClientTicket, type TicketComment } from "../../services/ticketApi";
 
 export function ClientFloatingChatWidget() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [activeTicket, setActiveTicket] = useState<ClientTicket | null>(null);
   const [messages, setMessages] = useState<TicketComment[]>([]);
@@ -321,15 +324,29 @@ export function ClientFloatingChatWidget() {
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
               {activeTicket && (
-                <Tooltip title="Refresh conversation">
-                  <IconButton
-                    size="small"
-                    onClick={() => fetchComments(activeTicket.id)}
-                    sx={{ color: "#94a3b8", "&:hover": { color: "#ffffff" } }}
-                  >
-                    <RefreshIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
+                <>
+                  <Tooltip title="Open in Support & Tickets section">
+                    <IconButton
+                      size="small"
+                      onClick={() => {
+                        setIsOpen(false);
+                        navigate(`/tickets?ticketId=${activeTicket.id}`);
+                      }}
+                      sx={{ color: "#94a3b8", "&:hover": { color: "#ffffff" } }}
+                    >
+                      <OpenInNewIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Refresh conversation">
+                    <IconButton
+                      size="small"
+                      onClick={() => fetchComments(activeTicket.id)}
+                      sx={{ color: "#94a3b8", "&:hover": { color: "#ffffff" } }}
+                    >
+                      <RefreshIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </>
               )}
               <IconButton
                 size="small"
@@ -471,6 +488,17 @@ export function ClientFloatingChatWidget() {
                       </Box>
                     ))}
                   </Box>
+                  <Button
+                    fullWidth
+                    size="small"
+                    onClick={() => {
+                      setIsOpen(false);
+                      navigate("/tickets");
+                    }}
+                    sx={{ mt: 1.5, textTransform: "none", fontWeight: 700, fontSize: "0.75rem", color: tokens.colors.primary.main }}
+                  >
+                    View All in Support & Tickets Hub →
+                  </Button>
                 </Box>
               )}
             </Box>
@@ -499,12 +527,26 @@ export function ClientFloatingChatWidget() {
                     {activeTicket.title || activeTicket.subject || "Live Support"}
                   </Typography>
                 </Box>
-                <Chip
-                  label={activeTicket.status}
-                  size="small"
-                  color={activeTicket.status === "RESOLVED" ? "success" : "info"}
-                  sx={{ height: 20, fontSize: "0.65rem", fontWeight: 700 }}
-                />
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Button
+                    size="small"
+                    variant="text"
+                    startIcon={<OpenInNewIcon sx={{ fontSize: "14px !important" }} />}
+                    onClick={() => {
+                      setIsOpen(false);
+                      navigate(`/tickets?ticketId=${activeTicket.id}`);
+                    }}
+                    sx={{ textTransform: "none", fontSize: "0.7rem", fontWeight: 700, py: 0, px: 0.75, minWidth: "auto" }}
+                  >
+                    Full Hub
+                  </Button>
+                  <Chip
+                    label={activeTicket.status}
+                    size="small"
+                    color={activeTicket.status === "RESOLVED" ? "success" : "info"}
+                    sx={{ height: 20, fontSize: "0.65rem", fontWeight: 700 }}
+                  />
+                </Box>
               </Box>
 
               {/* Status Note on Assignment */}

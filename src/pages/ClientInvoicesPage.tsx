@@ -28,6 +28,7 @@ import { tokens } from "../theme/tokens";
 import { invoiceApi, type ClientInvoice } from "../services/invoiceApi";
 import { BrandLoader } from "../components/common/BrandLoader";
 import { ClientKpiSkeleton } from "../components/common/ClientSkeleton";
+import { GeometricBadge } from "../components/common/PortalIllustrations";
 
 export default function ClientInvoicesPage() {
   const [invoices, setInvoices] = useState<ClientInvoice[]>([]);
@@ -76,7 +77,7 @@ export default function ClientInvoicesPage() {
         </Typography>
       </Box>
 
-      {/* KPI Cards */}
+      {/* KPI Cards in Reference Pastel Style */}
       <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(3, 1fr)" }, gap: 3, mb: 4 }}>
         {loading ? (
           <>
@@ -86,48 +87,69 @@ export default function ClientInvoicesPage() {
           </>
         ) : (
           <>
-            <Card sx={{ borderRadius: tokens.borderRadius.lg, border: `1px solid ${tokens.colors.secondary[200]}` }}>
-              <CardContent sx={{ p: 3, display: "flex", alignItems: "center", gap: 2 }}>
-                <Box sx={{ p: 1.5, borderRadius: tokens.borderRadius.md, bgcolor: tokens.colors.primary[50], color: tokens.colors.primary.main }}>
-                  <AccountBalanceWalletOutlinedIcon fontSize="large" />
-                </Box>
+            <Card
+              sx={{
+                borderRadius: "28px",
+                bgcolor: tokens.colors.pastel.sky.bg,
+                border: `1.5px solid ${tokens.colors.pastel.sky.border}`,
+                boxShadow: "0 10px 30px -10px rgba(0,0,0,0.04)",
+                transition: "transform 0.2s ease",
+                "&:hover": { transform: "translateY(-3px)" },
+              }}
+            >
+              <CardContent sx={{ p: 3, display: "flex", alignItems: "center", gap: 2.5 }}>
+                <GeometricBadge type="rings" size={50} />
                 <Box>
-                  <Typography variant="caption" fontWeight={700} color="text.secondary" textTransform="uppercase">
-                    Total Billed
+                  <Typography variant="caption" fontWeight={800} color="#0f172a" textTransform="uppercase" letterSpacing="0.05em">
+                    Total Invoiced
                   </Typography>
-                  <Typography variant="h5" fontWeight={800} color={tokens.colors.secondary[900]}>
+                  <Typography variant="h5" fontWeight={900} color="#0f172a">
                     ₹{totalBilling.toLocaleString()}
                   </Typography>
                 </Box>
               </CardContent>
             </Card>
 
-            <Card sx={{ borderRadius: tokens.borderRadius.lg, border: `1px solid ${tokens.colors.secondary[200]}` }}>
-              <CardContent sx={{ p: 3, display: "flex", alignItems: "center", gap: 2 }}>
-                <Box sx={{ p: 1.5, borderRadius: tokens.borderRadius.md, bgcolor: tokens.colors.success[50], color: tokens.colors.success.main }}>
-                  <CheckCircleOutlinedIcon fontSize="large" />
-                </Box>
+            <Card
+              sx={{
+                borderRadius: "28px",
+                bgcolor: tokens.colors.pastel.mint.bg,
+                border: `1.5px solid ${tokens.colors.pastel.mint.border}`,
+                boxShadow: "0 10px 30px -10px rgba(0,0,0,0.04)",
+                transition: "transform 0.2s ease",
+                "&:hover": { transform: "translateY(-3px)" },
+              }}
+            >
+              <CardContent sx={{ p: 3, display: "flex", alignItems: "center", gap: 2.5 }}>
+                <GeometricBadge type="cube" size={50} />
                 <Box>
-                  <Typography variant="caption" fontWeight={700} color="text.secondary" textTransform="uppercase">
-                    Total Paid
+                  <Typography variant="caption" fontWeight={800} color="#0f172a" textTransform="uppercase" letterSpacing="0.05em">
+                    Settled & Paid
                   </Typography>
-                  <Typography variant="h5" fontWeight={800} color={tokens.colors.success[700]}>
+                  <Typography variant="h5" fontWeight={900} color="#0f172a">
                     ₹{totalPaid.toLocaleString()}
                   </Typography>
                 </Box>
               </CardContent>
             </Card>
 
-            <Card sx={{ borderRadius: tokens.borderRadius.lg, border: `1px solid ${tokens.colors.secondary[200]}` }}>
-              <CardContent sx={{ p: 3, display: "flex", alignItems: "center", gap: 2 }}>
-                <Box sx={{ p: 1.5, borderRadius: tokens.borderRadius.md, bgcolor: tokens.colors.warning[50], color: tokens.colors.warning.main }}>
-                  <HourglassTopOutlinedIcon fontSize="large" />
-                </Box>
+            <Card
+              sx={{
+                borderRadius: "28px",
+                bgcolor: tokens.colors.pastel.blush.bg,
+                border: `1.5px solid ${tokens.colors.pastel.blush.border}`,
+                boxShadow: "0 10px 30px -10px rgba(0,0,0,0.04)",
+                transition: "transform 0.2s ease",
+                "&:hover": { transform: "translateY(-3px)" },
+              }}
+            >
+              <CardContent sx={{ p: 3, display: "flex", alignItems: "center", gap: 2.5 }}>
+                <GeometricBadge type="star" size={50} />
                 <Box>
-                  <Typography variant="caption" fontWeight={700} color="text.secondary" textTransform="uppercase">
+                  <Typography variant="caption" fontWeight={800} color="#0f172a" textTransform="uppercase" letterSpacing="0.05em">
                     Pending Balance
                   </Typography>
-                  <Typography variant="h5" fontWeight={800} color={tokens.colors.warning[700]}>
+                  <Typography variant="h5" fontWeight={900} color="#0f172a">
                     ₹{totalPending.toLocaleString()}
                   </Typography>
                 </Box>

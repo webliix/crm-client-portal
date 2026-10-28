@@ -12,16 +12,18 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
+import InputAdornment from "@mui/material/InputAdornment";
+import Chip from "@mui/material/Chip";
+
+// Icons
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import KeyOutlinedIcon from "@mui/icons-material/KeyOutlined";
-import InputAdornment from "@mui/material/InputAdornment";
-import Chip from "@mui/material/Chip";
-import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
-import CheckCircle2Icon from "@mui/icons-material/CheckCircleOutline";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+
 import { tokens } from "../theme/tokens";
 import { authService } from "../services/authService";
+import { IsometricCubeIllustration, GeometricBadge } from "../components/common/PortalIllustrations";
 
 export default function ClientLoginPage() {
   const navigate = useNavigate();
@@ -69,12 +71,12 @@ export default function ClientLoginPage() {
       setResetStep("OTP");
       setResetMsg({
         type: "success",
-        text: res.message || "A 6-digit OTP verification code has been dispatched to your email address.",
+        text: res.message || "A 6-digit verification code has been dispatched to your email.",
       });
     } catch (err: any) {
       setResetMsg({
         type: "error",
-        text: err.response?.data?.message || err.message || "Failed to dispatch verification code. Please check the email entered.",
+        text: err.response?.data?.message || err.message || "Failed to dispatch verification code.",
       });
     } finally {
       setResetLoading(false);
@@ -97,24 +99,24 @@ export default function ClientLoginPage() {
         currentToken = verifyRes.resetToken;
         setResetToken(currentToken);
       }
-
       const resetRes = await authService.resetPassword(resetEmail.trim(), currentToken, newPassword);
       setResetMsg({
         type: "success",
-        text: resetRes.message || "Password updated successfully! You can now log in.",
+        text: resetRes.message || "Password reset successful! You can now sign in.",
       });
       setTimeout(() => {
         setForgotModalOpen(false);
         setResetStep("EMAIL");
-        setResetMsg(null);
+        setResetEmail("");
         setOtpCode("");
         setNewPassword("");
         setResetToken("");
-      }, 1500);
+        setResetMsg(null);
+      }, 2000);
     } catch (err: any) {
       setResetMsg({
         type: "error",
-        text: err.response?.data?.message || err.message || "Invalid or expired OTP code. Please check and try again.",
+        text: err.response?.data?.message || err.message || "Verification code is invalid or has expired.",
       });
     } finally {
       setResetLoading(false);
@@ -125,341 +127,264 @@ export default function ClientLoginPage() {
     <Box
       sx={{
         minHeight: "100vh",
+        bgcolor: "#f8fafc",
         display: "flex",
-        flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        bgcolor: "#090d16",
-        position: "relative",
-        overflow: "hidden",
-        p: { xs: 2.5, sm: 4 },
+        p: { xs: 2, sm: 3 },
       }}
     >
-      {/* Ambient Cyber Halos */}
-      <Box
-        sx={{
-          position: "absolute",
-          top: "-15%",
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: { xs: "360px", sm: "700px" },
-          height: { xs: "360px", sm: "500px" },
-          background: "radial-gradient(circle, rgba(99, 102, 241, 0.22) 0%, rgba(139, 92, 246, 0.12) 45%, transparent 70%)",
-          filter: "blur(90px)",
-          borderRadius: "50%",
-          pointerEvents: "none",
-        }}
-      />
-
-      {/* Main Login Card */}
+      {/* Central Login Card */}
       <Card
         sx={{
           width: "100%",
-          maxWidth: 460,
-          borderRadius: tokens.borderRadius.xl,
-          boxShadow: "0 24px 60px -12px rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.15)",
-          bgcolor: "#ffffff",
-          border: "1px solid rgba(226, 232, 240, 0.8)",
-          position: "relative",
-          zIndex: 10,
+          maxWidth: 960,
+          borderRadius: "24px",
+          border: "1px solid #e2e8f0",
+          boxShadow: "0 20px 40px -8px rgba(0,0,0,0.06)",
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", md: "1.1fr 1fr" },
           overflow: "hidden",
+          bgcolor: "#ffffff",
         }}
       >
-        {/* Top Accent Gradient Bar */}
-        <Box sx={{ height: 4, background: tokens.colors.primary.gradient }} />
-
-        <CardContent sx={{ p: { xs: 3.5, sm: 4.5 } }}>
-          {/* Logo & Headline */}
-          <Box sx={{ textAlign: "center", mb: 3.5 }}>
+        {/* Left Side: Login Form */}
+        <Box sx={{ p: { xs: 3, sm: 5 }, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          {/* Brand Logo & Title */}
+          <Box sx={{ mb: 3, display: "flex", alignItems: "center", gap: 1.5 }}>
             <Box
               component="img"
               src="https://res.cloudinary.com/vhth8clt/image/upload/v1788210409/logo.png"
-              alt="Webliix Logo"
-              sx={{
-                height: 48,
-                maxHeight: 48,
-                objectFit: "contain",
-                mx: "auto",
-                mb: 2,
-              }}
+              alt="Webliix"
+              sx={{ height: 32, objectFit: "contain" }}
             />
-
-            <Box sx={{ display: "inline-flex", alignItems: "center", gap: 0.75, mb: 1, px: 2, py: 0.5, borderRadius: tokens.borderRadius.full, bgcolor: tokens.colors.primary[50], border: `1px solid ${tokens.colors.primary[200]}` }}>
-              <ShieldOutlinedIcon sx={{ fontSize: 14, color: tokens.colors.primary.main }} />
-              <Typography variant="caption" fontWeight={800} color={tokens.colors.primary[700]} sx={{ letterSpacing: "0.04em" }}>
-                SECURE CLIENT PORTAL
-              </Typography>
-            </Box>
-
-            <Typography variant="h5" fontWeight={800} color={tokens.colors.secondary[900]} gutterBottom>
-              Client Sign-In
+            <Typography variant="h6" fontWeight={900} letterSpacing="-0.03em" fontStyle="italic" color="#111827">
+              Webliix
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.875rem" }}>
-              Access milestones, live engineering chat, and billing
-            </Typography>
+            <Chip
+              label="Client Hub"
+              size="small"
+              sx={{ bgcolor: "#f1f5f9", fontWeight: 800, fontSize: "0.6875rem", height: 20 }}
+            />
           </Box>
 
+          <Typography variant="h5" fontWeight={900} letterSpacing="-0.03em" color="#0f172a" gutterBottom>
+            Welcome Back
+          </Typography>
+          <Typography variant="body2" color="#64748b" sx={{ mb: 3 }}>
+            Sign in to access your projects, milestone tasks, deliverables, and billing invoices.
+          </Typography>
+
           {error && (
-            <Alert severity="error" sx={{ mb: 3, borderRadius: tokens.borderRadius.md, fontSize: "0.84rem" }}>
+            <Alert severity="error" sx={{ mb: 2.5, borderRadius: "12px", fontSize: "0.8125rem" }}>
               {error}
             </Alert>
           )}
 
-          <form onSubmit={handleSubmit}>
-            <Box sx={{ display: "grid", gap: 2.25 }}>
-              <Box>
-                <Typography variant="caption" fontWeight={700} color={tokens.colors.secondary[700]} sx={{ mb: 0.75, display: "block" }}>
-                  Client Email Address
-                </Typography>
-                <TextField
-                  fullWidth
-                  type="email"
-                  placeholder="client@yourcompany.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <EmailOutlinedIcon sx={{ fontSize: 19, color: tokens.colors.secondary[400] }} />
-                      </InputAdornment>
-                    ),
-                  }}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: tokens.borderRadius.md,
-                      "&.Mui-focused fieldset": {
-                        borderColor: tokens.colors.primary.main,
-                        boxShadow: `0 0 0 3px ${tokens.colors.primary[100]}`,
-                      },
-                    },
-                  }}
-                />
-              </Box>
+          <Box component="form" onSubmit={handleSubmit} sx={{ display: "grid", gap: 2 }}>
+            <TextField
+              label="Client Email"
+              type="email"
+              fullWidth
+              required
+              autoFocus
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="name@company.com"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <EmailOutlinedIcon sx={{ color: "#94a3b8", fontSize: 20 }} />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "14px",
+                },
+              }}
+            />
 
-              <Box>
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 0.75 }}>
-                  <Typography variant="caption" fontWeight={700} color={tokens.colors.secondary[700]}>
-                    Password
-                  </Typography>
-                  <Button
-                    size="small"
-                    onClick={() => { setForgotModalOpen(true); setResetStep("EMAIL"); setResetMsg(null); }}
-                    sx={{ p: 0, minWidth: "auto", fontSize: "0.75rem", fontWeight: 700, textTransform: "none", color: tokens.colors.primary.main }}
-                  >
-                    Forgot Password?
-                  </Button>
-                </Box>
-                <TextField
-                  fullWidth
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <LockOutlinedIcon sx={{ fontSize: 19, color: tokens.colors.secondary[400] }} />
-                      </InputAdornment>
-                    ),
-                  }}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: tokens.borderRadius.md,
-                      "&.Mui-focused fieldset": {
-                        borderColor: tokens.colors.primary.main,
-                        boxShadow: `0 0 0 3px ${tokens.colors.primary[100]}`,
-                      },
-                    },
-                  }}
-                />
-              </Box>
+            <TextField
+              label="Password"
+              type="password"
+              fullWidth
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LockOutlinedIcon sx={{ color: "#94a3b8", fontSize: 20 }} />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "14px",
+                },
+              }}
+            />
 
+            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
               <Button
-                type="submit"
-                variant="contained"
-                size="large"
-                disabled={loading}
-                endIcon={!loading && <ArrowForwardIcon sx={{ fontSize: 18 }} />}
+                size="small"
+                onClick={() => {
+                  setForgotModalOpen(true);
+                  setResetMsg(null);
+                  setResetStep("EMAIL");
+                }}
                 sx={{
-                  mt: 0.75,
-                  py: 1.4,
-                  borderRadius: tokens.borderRadius.md,
-                  fontWeight: 800,
-                  fontSize: "0.9375rem",
                   textTransform: "none",
-                  background: tokens.colors.primary.gradient,
-                  boxShadow: "0 6px 20px rgba(99, 102, 241, 0.4)",
-                  "&:hover": {
-                    background: "linear-gradient(135deg, #4f46e5 0%, #4338ca 100%)",
-                    boxShadow: "0 8px 24px rgba(99, 102, 241, 0.5)",
-                  },
+                  fontWeight: 700,
+                  fontSize: "0.8125rem",
+                  color: "#64748b",
+                  "&:hover": { color: "#111827" },
                 }}
               >
-                {loading ? <CircularProgress size={24} sx={{ color: "#ffffff" }} /> : "Access Client Workspace"}
+                Forgot Password?
               </Button>
             </Box>
-          </form>
 
-          {/* Value Props Row */}
-          <Box sx={{ mt: 3.5, pt: 3, borderTop: "1px solid #f1f5f9", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, textAlign: "center" }}>
-            <Box>
-              <Typography variant="caption" fontWeight={800} color="#0f172a" sx={{ fontSize: "0.75rem", display: "block" }}>
-                24/7 Access
-              </Typography>
-              <Typography variant="caption" color="text.secondary" sx={{ fontSize: "0.6875rem" }}>
-                Live Tracking
-              </Typography>
-            </Box>
-            <Box>
-              <Typography variant="caption" fontWeight={800} color="#0f172a" sx={{ fontSize: "0.75rem", display: "block" }}>
-                Direct Chat
-              </Typography>
-              <Typography variant="caption" color="text.secondary" sx={{ fontSize: "0.6875rem" }}>
-                Engineering Team
-              </Typography>
-            </Box>
-            <Box>
-              <Typography variant="caption" fontWeight={800} color="#0f172a" sx={{ fontSize: "0.75rem", display: "block" }}>
-                100% Verified
-              </Typography>
-              <Typography variant="caption" color="text.secondary" sx={{ fontSize: "0.6875rem" }}>
-                Invoices & Files
-              </Typography>
-            </Box>
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              disabled={loading}
+              endIcon={!loading && <ArrowForwardIcon sx={{ fontSize: 18 }} />}
+              sx={{
+                bgcolor: "#000000",
+                color: "#ffffff",
+                py: 1.35,
+                fontWeight: 800,
+                fontSize: "0.9375rem",
+                borderRadius: "9999px",
+                textTransform: "none",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                "&:hover": {
+                  bgcolor: "#1e293b",
+                  boxShadow: "0 6px 16px rgba(0,0,0,0.25)",
+                },
+              }}
+            >
+              {loading ? <CircularProgress size={22} color="inherit" /> : "Sign In to Client Workspace"}
+            </Button>
           </Box>
-        </CardContent>
+        </Box>
+
+        {/* Right Side: Showcase Banner with 3D Illustration & Pastel Accents */}
+        <Box
+          sx={{
+            display: { xs: "none", md: "flex" },
+            flexDirection: "column",
+            justifyContent: "space-between",
+            p: 4.5,
+            bgcolor: "#000000",
+            color: "#ffffff",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          {/* Ambient 3D Illustration */}
+          <Box
+            sx={{
+              position: "absolute",
+              right: -30,
+              top: 20,
+              width: 320,
+              height: 260,
+              pointerEvents: "none",
+              opacity: 0.95,
+            }}
+          >
+            <IsometricCubeIllustration width="100%" height="100%" />
+          </Box>
+
+          {/* Top badges */}
+          <Box sx={{ position: "relative", zIndex: 2, display: "flex", gap: 1 }}>
+            <GeometricBadge type="cube" size={32} />
+            <GeometricBadge type="hexagon" size={32} />
+            <GeometricBadge type="star" size={32} />
+          </Box>
+
+          {/* Bottom text */}
+          <Box sx={{ position: "relative", zIndex: 2, mt: "auto" }}>
+            <Typography variant="h5" fontWeight={900} letterSpacing="-0.03em" sx={{ lineHeight: 1.25, mb: 1 }}>
+              Engineered for seamless client collaboration
+            </Typography>
+            <Typography variant="body2" sx={{ color: "#94a3b8", lineHeight: 1.5 }}>
+              Track sprint velocity, view real-time deliverables, inspect code milestones, and review invoices in one unified workspace.
+            </Typography>
+          </Box>
+        </Box>
       </Card>
 
-      {/* Footer Support & Links */}
-      <Box sx={{ mt: 3, textAlign: "center", position: "relative", zIndex: 10 }}>
-        <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap", justifyContent: "center", mb: 1 }}>
-          <Typography
-            component="a"
-            href="https://webliix.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            variant="caption"
-            sx={{ color: "#94a3b8", textDecoration: "none", fontWeight: 600, "&:hover": { color: "#ffffff" } }}
-          >
-            ← Back to Webliix.com
-          </Typography>
-          <Typography
-            component="a"
-            href="https://webliix.com/terms"
-            target="_blank"
-            rel="noopener noreferrer"
-            variant="caption"
-            sx={{ color: "#94a3b8", textDecoration: "none", fontWeight: 600, "&:hover": { color: "#ffffff" } }}
-          >
-            Terms of Service
-          </Typography>
-          <Typography
-            component="a"
-            href="https://webliix.com/privacy"
-            target="_blank"
-            rel="noopener noreferrer"
-            variant="caption"
-            sx={{ color: "#94a3b8", textDecoration: "none", fontWeight: 600, "&:hover": { color: "#ffffff" } }}
-          >
-            Privacy Policy
-          </Typography>
-        </Box>
-        <Typography variant="caption" sx={{ color: "#64748b", fontSize: "0.6875rem", fontFamily: "monospace" }}>
-          Official Webliix Client Portal • login.webliix.com
-        </Typography>
-      </Box>
-
-      {/* Forgot Password OTP Modal */}
-      <Dialog
-        open={forgotModalOpen}
-        onClose={() => setForgotModalOpen(false)}
-        maxWidth="xs"
-        fullWidth
-        PaperProps={{
-          sx: {
-            borderRadius: tokens.borderRadius.lg,
-            p: 1,
-            boxShadow: tokens.shadows.xl,
-          },
-        }}
-      >
-        <DialogTitle sx={{ fontWeight: 800, pb: 1 }}>
-          {resetStep === "EMAIL" ? "Reset Password" : "Enter Verification OTP"}
-        </DialogTitle>
-        <DialogContent>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            {resetStep === "EMAIL"
-              ? "Enter your client account email address to receive a 6-digit verification code."
-              : `A 6-digit OTP code was sent to ${resetEmail}. Enter the code and choose a new password.`}
-          </Typography>
-
+      {/* Forgot Password Dialog */}
+      <Dialog open={forgotModalOpen} onClose={() => setForgotModalOpen(false)} maxWidth="xs" fullWidth>
+        <DialogTitle sx={{ fontWeight: 800, pb: 1 }}>Reset Password</DialogTitle>
+        <DialogContent dividers>
           {resetMsg && (
-            <Alert severity={resetMsg.type} sx={{ mb: 2, borderRadius: tokens.borderRadius.md }}>
+            <Alert severity={resetMsg.type} sx={{ mb: 2, borderRadius: "10px", fontSize: "0.8125rem" }}>
               {resetMsg.text}
             </Alert>
           )}
 
           {resetStep === "EMAIL" ? (
-            <Box component="form" onSubmit={handleSendOtp} sx={{ display: "grid", gap: 2 }}>
+            <Box component="form" onSubmit={handleSendOtp} sx={{ display: "grid", gap: 2, pt: 1 }}>
+              <Typography variant="body2" color="text.secondary">
+                Enter your registered client email to receive a 6-digit verification code.
+              </Typography>
               <TextField
-                autoFocus
-                fullWidth
+                label="Registered Email"
                 type="email"
-                label="Client Email"
+                fullWidth
+                required
                 value={resetEmail}
                 onChange={(e) => setResetEmail(e.target.value)}
-                placeholder="client@yourcompany.com"
-                required
+                placeholder="name@company.com"
               />
-              <DialogActions sx={{ px: 0, pb: 0 }}>
-                <Button onClick={() => setForgotModalOpen(false)} sx={{ fontWeight: 600 }}>
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  disabled={resetLoading || !resetEmail.trim()}
-                  sx={{ fontWeight: 700, borderRadius: tokens.borderRadius.md }}
-                >
-                  {resetLoading ? <CircularProgress size={20} color="inherit" /> : "Send OTP"}
-                </Button>
-              </DialogActions>
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={resetLoading || !resetEmail.trim()}
+                sx={{ bgcolor: "#000000", "&:hover": { bgcolor: "#1e293b" }, fontWeight: 700, borderRadius: "9999px", py: 1 }}
+              >
+                {resetLoading ? <CircularProgress size={20} color="inherit" /> : "Send Verification Code"}
+              </Button>
             </Box>
           ) : (
-            <Box component="form" onSubmit={handleVerifyOtpAndReset} sx={{ display: "grid", gap: 2 }}>
+            <Box component="form" onSubmit={handleVerifyOtpAndReset} sx={{ display: "grid", gap: 2, pt: 1 }}>
               <TextField
-                autoFocus
+                label="6-Digit OTP Code"
                 fullWidth
-                label="6-Digit Verification Code"
+                required
                 value={otpCode}
                 onChange={(e) => setOtpCode(e.target.value)}
                 placeholder="123456"
-                required
               />
               <TextField
-                fullWidth
+                label="New Password"
                 type="password"
-                label="New Password (min. 6 chars)"
+                fullWidth
+                required
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                required
+                placeholder="At least 6 characters"
               />
-              <DialogActions sx={{ px: 0, pb: 0 }}>
-                <Button onClick={() => setResetStep("EMAIL")} sx={{ fontWeight: 600 }}>
-                  Back
-                </Button>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  disabled={resetLoading || !otpCode.trim() || !newPassword}
-                  sx={{ fontWeight: 700, borderRadius: tokens.borderRadius.md }}
-                >
-                  {resetLoading ? <CircularProgress size={20} color="inherit" /> : "Update Password"}
-                </Button>
-              </DialogActions>
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={resetLoading || !otpCode.trim() || !newPassword}
+                sx={{ bgcolor: "#000000", "&:hover": { bgcolor: "#1e293b" }, fontWeight: 700, borderRadius: "9999px", py: 1 }}
+              >
+                {resetLoading ? <CircularProgress size={20} color="inherit" /> : "Verify & Set New Password"}
+              </Button>
             </Box>
           )}
         </DialogContent>
+        <DialogActions sx={{ p: 2 }}>
+          <Button onClick={() => setForgotModalOpen(false)}>Close</Button>
+        </DialogActions>
       </Dialog>
     </Box>
   );
